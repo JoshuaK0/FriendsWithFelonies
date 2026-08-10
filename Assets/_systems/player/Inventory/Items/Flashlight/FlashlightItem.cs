@@ -1,0 +1,51 @@
+using UnityEngine;
+
+public sealed class FlashlightItem : HotbarHeldItem
+{
+    [SerializeField] private GameObject localFlashlightObject;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip toggleClip;
+    [SerializeField] private bool startsEnabled;
+
+    private FlashlightItemNetworked networkedCounterpart;
+    private bool enabledState;
+
+    protected override void OnContextInitialized()
+    {
+        networkedCounterpart = ItemServices != null ? ItemServices.GetNetworkedFlashlight() : null;
+    }
+
+    protected override void OnEquipped()
+    {
+        enabledState = startsEnabled;
+        ApplyLocalState();
+        networkedCounterpart?.RequestSetFlashlight(enabledState);
+    }
+
+    protected override void OnEquippedUpdate()
+    {
+        if (!Input.GetMouseButtonDown(0))
+            return;
+
+        enabledState = !enabledState;
+        ApplyLocalState();
+
+        if (audioSource != null && toggleClip != null)
+            audioSource.PlayOneShot(toggleClip);
+
+        networkedCounterpart?.RequestSetFlashlight(enabledState);
+    }
+
+    protected override void OnUnequipped()
+    {
+        enabledState = false;
+        ApplyLocalState();
+        networkedCounterpart?.RequestSetFlashlight(false);
+    }
+
+    private void ApplyLocalState()
+    {
+        if (localFlashlightObject != null)
+            localFlashlightObject.SetActive(enabledState);
+    }
+}
