@@ -122,6 +122,7 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _Contrast: 0.5
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
@@ -133,13 +134,13 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0.2
-    - _NormalStrength: 6.74
+    - _NormalStrength: 10
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Scale: 0.3
+    - _Scale: 0.2
     - _Smoothness: 0.5
     - _SmoothnessBoost: 0.3
     - _SmoothnessTextureChannel: 0
