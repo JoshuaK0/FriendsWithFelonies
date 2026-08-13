@@ -68,15 +68,16 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6bdb9c1d8b3ace1408d2de12e30ae744, type: 2}
-  m_sharedMaterial: {fileID: 3107891133831500437, guid: 6bdb9c1d8b3ace1408d2de12e30ae744, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 67c1f7ad4c0a8ff498fc5528f291ad39, type: 2}
+  m_sharedMaterial: {fileID: -4369096386316679674, guid: 67c1f7ad4c0a8ff498fc5528f291ad39,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4280715213
+  m_fontColor: {r: 0.8037735, g: 0.53092176, b: 0.15013877, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -104,7 +105,6 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
-  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -150,13 +150,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0f503d8a54a79b428dfbcb4448abeac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preset: {fileID: 11400000, guid: 62d3d5000dc484241a42d255128f3aa7, type: 2}
+  preset: {fileID: 11400000, guid: 17b80b094957e204a88b062b66b21fa4, type: 2}
   targetGraphic: {fileID: 5694267546712112477}
   targetText: {fileID: 5694267546712112477}
   targetGradient: {fileID: 0}
   objectType: 1
-  colorID: Primary
-  fontID: Inter - Regular
+  colorID: Color 11
+  fontID: Main Menu Button
   gradientID: 
   spriteID: 
   useCustomColor: 0

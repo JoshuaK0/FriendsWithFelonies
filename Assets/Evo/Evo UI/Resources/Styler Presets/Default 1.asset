@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42939178eadba994ab57405394a12e26, type: 3}
-  m_Name: MainMenuStyle
+  m_Name: Default 1
   m_EditorClassIdentifier: 
   audioItems:
   - itemID: Hover SFX
@@ -21,7 +21,7 @@ MonoBehaviour:
     audioAsset: {fileID: 8300000, guid: 04ee76c723465b54196cedac182ba2c1, type: 3}
   colorItems:
   - itemID: Primary
-    colorValue: {r: 0.82745105, g: 0.58431375, b: 0.21568629, a: 1}
+    colorValue: {r: 1, g: 1, b: 1, a: 1}
   - itemID: Primary (Soft)
     colorValue: {r: 1, g: 1, b: 1, a: 0.039215688}
   - itemID: Primary (Tint)
@@ -29,7 +29,7 @@ MonoBehaviour:
   - itemID: Secondary
     colorValue: {r: 0.09411765, g: 0.09411765, b: 0.105882354, a: 1}
   - itemID: Accent
-    colorValue: {r: 1, g: 0.80784315, b: 0.27058825, a: 1}
+    colorValue: {r: 0.39215687, g: 0.7058824, b: 1, a: 1}
   - itemID: Accent (Soft)
     colorValue: {r: 0.3921569, g: 0.7058824, b: 1, a: 0.05882353}
   - itemID: Accent (Tint)
@@ -48,7 +48,7 @@ MonoBehaviour:
   - itemID: Inter - Light
     fontAsset: {fileID: 11400000, guid: b9eaf5570922ec845b483eb8974e9cef, type: 2}
   - itemID: Inter - Regular
-    fontAsset: {fileID: 11400000, guid: 72b70292b1d453f4697e32963d8b2c91, type: 2}
+    fontAsset: {fileID: 11400000, guid: 6bdb9c1d8b3ace1408d2de12e30ae744, type: 2}
   - itemID: Inter - Medium
     fontAsset: {fileID: 11400000, guid: ca41716b31c560c4ab5667448aaae70c, type: 2}
   - itemID: Inter - Semi Bold
@@ -60,21 +60,11 @@ MonoBehaviour:
   - itemID: Inter - Black
     fontAsset: {fileID: 11400000, guid: 4be21f40c8e9ed149abd8691e94e799d, type: 2}
   gradientItems: []
-  spriteItems:
-  - itemID: Settings
-    spriteAsset: {fileID: 21300000, guid: 282c195fe1003af44b5ad8cf4564db59, type: 3}
-    applyImageSettings: 0
-    imageType: 0
-    preserveAspect: 0
-    pixelsPerUnitMultiplier: 0
-    fillMethod: 0
-    fillOrigin: 0
-    fillAmount: 0
-    fillClockwise: 0
+  spriteItems: []
   updateMode: 0
   audioFoldout: 0
-  colorFoldout: 1
-  fontFoldout: 1
-  spriteFoldout: 1
-  gradientFoldout: 1
-  settingsFoldout: 1
+  colorFoldout: 0
+  fontFoldout: 0
+  spriteFoldout: 0
+  gradientFoldout: 0
+  settingsFoldout: 0
