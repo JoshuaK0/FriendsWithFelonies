@@ -465,6 +465,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 189210598}
   m_CullTransparentMesh: 1
+--- !u!1 &196609237 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1676513856529422219, guid: db76bb02f70bbc542a09e202fb75c8cc,
+    type: 3}
+  m_PrefabInstance: {fileID: 5470023978276104127}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &269575146
 GameObject:
   m_ObjectHideFlags: 0
@@ -3092,7 +3098,19 @@ MonoBehaviour:
   selectedCG: {fileID: 0}
   onClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2031711800}
+        m_TargetAssemblyTypeName: FadeInOut, Assembly-CSharp
+        m_MethodName: FadeOut
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: TransitionFadeIn
+          m_BoolArgument: 0
+        m_CallState: 2
   onPointerDown:
     m_PersistentCalls:
       m_Calls: []
@@ -4573,7 +4591,7 @@ GameObject:
   - component: {fileID: 2031711801}
   - component: {fileID: 2031711800}
   m_Layer: 0
-  m_Name: FadeInOut
+  m_Name: FadeInOutManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4865,6 +4883,221 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 175761903}
     m_Modifications:
+    - target: {fileID: 1959662357074763022, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1959662357074763022, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1959662357074763022, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1959662357074763022, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1959662357074763022, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: image
+      value: 
+      objectReference: {fileID: 5470023978276104129}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: canvasGroup
+      value: 
+      objectReference: {fileID: 5470023978276104132}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: rectTransform
+      value: 
+      objectReference: {fileID: 5470023978276104131}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: referencesFoldout
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].label
+      value: StartFade
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].trigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].isExpanded
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[0].animations.Array.data[0].delay
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[1].animations.Array.data[0].delay
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[0].animations.Array.data[0].fadeTo
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[1].animations.Array.data[0].fadeTo
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].fadeTo
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[0].animations.Array.data[0].duration
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[0].animations.Array.data[0].fadeFrom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[1].animations.Array.data[0].duration
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[1].animations.Array.data[0].fadeFrom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].duration
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].easeType
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].rotateTo
+      value: 360
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].colorTo.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].colorTo.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].colorTo.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].colorTo.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].scaleTo.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].scaleTo.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].scaleTo.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].isExpanded
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].colorFrom.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].colorFrom.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].colorFrom.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].colorFrom.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].bounceHeight
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].punchIntensity
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].shakeIntensity
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2563934474882170887, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      propertyPath: animationGroups.Array.data[2].animations.Array.data[0].animateFromCurrentValue
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8787473531771601290, guid: db76bb02f70bbc542a09e202fb75c8cc,
         type: 3}
       propertyPath: m_Name
@@ -4973,7 +5206,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1676513856529422219, guid: db76bb02f70bbc542a09e202fb75c8cc,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5470023978276104132}
   m_SourcePrefab: {fileID: 100100000, guid: db76bb02f70bbc542a09e202fb75c8cc, type: 3}
 --- !u!114 &5470023978276104128 stripped
 MonoBehaviour:
@@ -4981,12 +5218,42 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 5470023978276104127}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 196609237}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2fa7af513dc2ead449991695979b47a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5470023978276104129 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1959662357074763022, guid: db76bb02f70bbc542a09e202fb75c8cc,
+    type: 3}
+  m_PrefabInstance: {fileID: 5470023978276104127}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196609237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!224 &5470023978276104131 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3177116610244062546, guid: db76bb02f70bbc542a09e202fb75c8cc,
+    type: 3}
+  m_PrefabInstance: {fileID: 5470023978276104127}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &5470023978276104132
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196609237}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
