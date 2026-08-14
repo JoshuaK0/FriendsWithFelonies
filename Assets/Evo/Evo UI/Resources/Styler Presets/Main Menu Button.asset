@@ -42,6 +42,8 @@ MonoBehaviour:
     colorValue: {r: 0.14117648, g: 0.15686275, b: 0.17254902, a: 0.60784316}
   - itemID: MM Normal
     colorValue: {r: 0.8037735, g: 0.53092176, b: 0.15013877, a: 1}
+  - itemID: Elegent
+    colorValue: {r: 1, g: 1, b: 1, a: 1}
   fontItems:
   - itemID: Inter - Thin
     fontAsset: {fileID: 11400000, guid: 81facff2346e3014a96115fb92776dc2, type: 2}
@@ -63,6 +65,8 @@ MonoBehaviour:
     fontAsset: {fileID: 11400000, guid: 4be21f40c8e9ed149abd8691e94e799d, type: 2}
   - itemID: MM Button
     fontAsset: {fileID: 11400000, guid: 67c1f7ad4c0a8ff498fc5528f291ad39, type: 2}
+  - itemID: Elegent
+    fontAsset: {fileID: 11400000, guid: 72b70292b1d453f4697e32963d8b2c91, type: 2}
   gradientItems:
   - itemID: Gradient 1
     gradientValue:
@@ -102,4 +106,4 @@ MonoBehaviour:
   fontFoldout: 1
   spriteFoldout: 1
   gradientFoldout: 1
-  settingsFoldout: 0
+  settingsFoldout: 1
