@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a352e32701e57348ad6a35f8dd7177b, type: 3}
+  m_Name: ThermalGoggles
+  m_EditorClassIdentifier: 
+  lookupName: thermalGoggles
+  displayName: Thermal Goggles
+  maxStack: 1
+  consumeOnEmpty: 1
+  isDroppable: 1
+  isPurchasable: 1
+  cost: 100
+  purchaseAmount: 1
+  worldPrefab: {fileID: 3594035887864941349, guid: 61891c618e466a442888426d8a70b2f8,
+    type: 3}
+  heldPrefab: {fileID: 693203027816185173, guid: 5ff0112405a42814d8d92c2c1a535916,
+    type: 3}
+  remoteHeldPrefab: {fileID: 0}

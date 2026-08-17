@@ -31,6 +31,9 @@ public sealed class NightVisionGoggles : HotbarHeldItem
 	[SerializeField, Min(0f)]
 	private float nightVisionLerpDuration = 0.5f;
 
+	[SerializeField, Range(0f, 1f)]
+	private float nightVisionReflectionIntensity = 0f;
+
 	[SerializeField]
 	private GameObject screenFx;
 
@@ -53,6 +56,8 @@ public sealed class NightVisionGoggles : HotbarHeldItem
 
 	private float currentDuration;
 	private bool isOn;
+
+	private float previousReflectionIntensity;
 
 	protected override void OnContextInitialized()
 	{
@@ -175,8 +180,8 @@ public sealed class NightVisionGoggles : HotbarHeldItem
 			Mathf.Min(
 				duration,
 				currentDuration +
-				Time.deltaTime *
-				consumeRate
+					Time.deltaTime *
+					consumeRate
 			);
 	}
 
@@ -192,6 +197,17 @@ public sealed class NightVisionGoggles : HotbarHeldItem
 			return;
 
 		isOn = true;
+
+		/*
+		 * Store the current reflection intensity
+		 * before applying the local night-vision
+		 * override.
+		 */
+		previousReflectionIntensity =
+			RenderSettings.reflectionIntensity;
+
+		RenderSettings.reflectionIntensity =
+			nightVisionReflectionIntensity;
 
 		/*
 		 * Immediately make the client's ambient
@@ -231,6 +247,14 @@ public sealed class NightVisionGoggles : HotbarHeldItem
 			AmbientLightManager.Instance
 				.ClearLocalOverride();
 		}
+
+		/*
+		 * Restore the reflection intensity that
+		 * was active before night vision was
+		 * enabled.
+		 */
+		RenderSettings.reflectionIntensity =
+			previousReflectionIntensity;
 
 		SetVisualState(false);
 	}

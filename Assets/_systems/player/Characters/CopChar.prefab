@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e18bd03b741ff7147addddc32ac0f894, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 30
+  _componentIndexCache: 31
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
   itemId: 1
@@ -532,7 +532,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 420abd20594c40e43ad1afd071328e58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 19
+  _componentIndexCache: 20
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
   networkAudioSource: {fileID: 0}
@@ -744,6 +744,7 @@ MonoBehaviour:
   - {fileID: 2976051522732441993}
   - {fileID: 6475357397947487365}
   - {fileID: 2412892590065171935}
+  - {fileID: 7153658920028870343}
   - {fileID: 1615857253253687214}
   - {fileID: 3155195275355038948}
   - {fileID: 386705824103785833}
@@ -1115,9 +1116,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4156757d9e4f334c90f2fd1d15f1680, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 19
   _addedNetworkObject: {fileID: 7001832778570804182}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 7001832778570804182}
   remoteUVFlashlightGameobject: {fileID: 6381515144511359470}
 --- !u!1 &2714187639996255631
 GameObject:
@@ -1163,7 +1164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3e348450d5903c49a8d7f1a2882e0c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 23
+  _componentIndexCache: 24
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
   ladderPrefab: {fileID: 0}
@@ -1370,7 +1371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a83ddd209e320c34b8101ec9f80b5eda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 29
+  _componentIndexCache: 30
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
   tripWirePrefab: {fileID: 0}
@@ -1428,7 +1429,6 @@ MonoBehaviour:
   delay: 3
   minDistance: 1
   footstepLifetime: 6
-  footstepsCamera: {fileID: 8209549718497374049}
 --- !u!1 &3255730066253432283
 GameObject:
   m_ObjectHideFlags: 0
@@ -1473,7 +1473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7da4dbccdb6d4a443bc6d9ddb3cea587, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 26
+  _componentIndexCache: 27
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
   stickyBombPrefab: {fileID: 314498998095690980, guid: f292c67af856382489b8e51824f2f835,
@@ -1756,7 +1756,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cf4da998e64aec4983f7b2be3381f26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 22
+  _componentIndexCache: 23
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
   definition: {fileID: 0}
@@ -1809,7 +1809,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cfc655cf40efdd49ab998fd54ff8891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 28
+  _componentIndexCache: 29
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
   tightRopePrefab: {fileID: 0}
@@ -1907,7 +1907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fad32df69d0580341ae9ba4e628dcb20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 27
+  _componentIndexCache: 28
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
   stickyCameraPrefab: {fileID: 0}
@@ -1956,10 +1956,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52034e7094f14734f88ef468dae60720, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 25
+  _componentIndexCache: 26
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
-  smokeBombPrefab: {fileID: 0}
+  smokeBombPrefab: {fileID: 4320750666994970714, guid: d3ec48e81d76ea2489e989a3dbd5aba6,
+    type: 3}
   throwVelocity: 10
   throwTorque: 3
 --- !u!1 &5064140487785666583
@@ -2091,7 +2092,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9873e4fb7537995498db2fa9c5ac8f3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 24
+  _componentIndexCache: 25
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
   sandbagPrefab: {fileID: 0}
@@ -2139,7 +2140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c422045f39a6424e8391fc3c4b2d293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 21
+  _componentIndexCache: 22
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
   networkAudioSource: {fileID: 0}
@@ -2321,7 +2322,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 1000
-  field of view: 90
+  field of view: 60
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -2548,7 +2549,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 210f5292f093d95468258b453a395438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 20
+  _componentIndexCache: 21
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
   glowstickPrefab: {fileID: 0}
@@ -3490,6 +3491,10 @@ PrefabInstance:
     - target: {fileID: 100468, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
       propertyPath: m_Name
       value: Character_Male_SWAT_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 125956, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
+      propertyPath: m_Layer
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 444644, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
       propertyPath: m_LocalPosition.x

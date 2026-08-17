@@ -10,8 +10,6 @@ public class FootstepsSpawner : NetworkBehaviour
 	[SerializeField] float minDistance;
 	[SerializeField] float footstepLifetime;
 
-	[SerializeField] Camera footstepsCamera;
-
 	float lastFootstepTime;
 
 	List<FootstepData> footsteps = new List<FootstepData>();
@@ -27,22 +25,6 @@ public class FootstepsSpawner : NetworkBehaviour
 			enabled = false;
 		}
 
-		if (PlayerTeams.Instance.GetTeamType(MyClient.Instance.TeamId) != TeamType.Cop)
-		{
-			if (footstepsCamera != null)
-			{
-				footstepsCamera.enabled = true;
-
-			}
-		}
-		else
-		{
-			if (footstepsCamera != null)
-			{
-				footstepsCamera.enabled = false;
-
-			}
-		}
 
 		lastPos = transform.position;
 	}
@@ -96,6 +78,11 @@ public class FootstepsSpawner : NetworkBehaviour
 	[ObserversRpc]
 	void CreateFootstpesClient(Vector3 position, Quaternion rot)
 	{
+		if(PlayerTeams.Instance.GetTeamType(MyClient.Instance.TeamId) == TeamType.Cop)
+		{
+			return;
+		}
+
 		GameObject newFootstep = Instantiate(footstepPrefab, position, rot);
 		Destroy(newFootstep, footstepLifetime);
 

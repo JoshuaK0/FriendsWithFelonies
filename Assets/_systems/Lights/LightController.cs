@@ -77,6 +77,8 @@ public sealed class LightController : NetworkBehaviour, ILightFlickerable
 
 		CacheAuthoredIntensities();
 
+		originalIntensity = flickerLights[0].intensity;
+
 		maxIntensity = 1f;
 		targetMaxIntensity = 1f;
 		stableState = startOn ? LightStableState.On : LightStableState.Off;
