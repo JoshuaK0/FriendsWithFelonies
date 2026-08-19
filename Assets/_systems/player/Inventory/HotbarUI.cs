@@ -2,72 +2,148 @@ using UnityEngine;
 
 public class HotbarUI : MonoBehaviour
 {
-    [SerializeField] private NetHotbarInventory hotbar;
-    [SerializeField] private HotbarUISlot slotPrefab;
-    [SerializeField] private Transform slotParent;
+	[SerializeField]
+	private NetHotbarInventory hotbar;
 
-    private HotbarUISlot[] uiSlots;
+	[SerializeField]
+	private HotbarUISlot slotPrefab;
 
-    private void Awake()
-    {
-        if (slotParent == null)
-            slotParent = transform;
+	[SerializeField]
+	private Transform slotParent;
 
-        if (hotbar == null)
-        {
-            Debug.LogWarning("HotbarUI: No hotbar assigned.", this);
-            return;
-        }
+	private HotbarUISlot[] uiSlots;
 
-        BuildSlots();
-        hotbar.OnHotbarChanged += OnHotbarChanged;
-        RefreshAll();
-    }
+	private void Awake()
+	{
+		if (slotParent == null)
+			slotParent = transform;
 
-    private void OnDestroy()
-    {
-        if (hotbar != null)
-            hotbar.OnHotbarChanged -= OnHotbarChanged;
-    }
+		if (hotbar == null)
+		{
+			Debug.LogWarning(
+				"HotbarUI: No hotbar assigned.",
+				this);
 
-    private void OnHotbarChanged(int selectedIndex)
-    {
-        RefreshAll();
-    }
+			return;
+		}
 
-    private void BuildSlots()
-    {
-        for (int i = slotParent.childCount - 1; i >= 0; i--)
-            Destroy(slotParent.GetChild(i).gameObject);
+		hotbar.OnHotbarChanged +=
+			OnHotbarChanged;
 
-        uiSlots = new HotbarUISlot[hotbar.SlotCount];
-        for (int i = 0; i < hotbar.SlotCount; i++)
-            uiSlots[i] = Instantiate(slotPrefab, slotParent);
-    }
+		RefreshAll();
+	}
 
-    private void RefreshAll()
-    {
-        if (hotbar == null || uiSlots == null)
-            return;
+	private void OnDestroy()
+	{
+		if (hotbar != null)
+		{
+			hotbar.OnHotbarChanged -=
+				OnHotbarChanged;
+		}
+	}
 
-        ItemRegistry registry = hotbar.Registry;
-        for (int i = 0; i < uiSlots.Length; i++)
-        {
-            HotbarUISlot uiSlot = uiSlots[i];
-            HotbarSlot slot = hotbar.GetSlot(i);
-            uiSlot.SetSelected(i == hotbar.SelectedIndex);
+	private void OnHotbarChanged(
+		int selectedIndex)
+	{
+		RefreshAll();
+	}
 
-            if (slot == null || slot.IsEmpty)
-            {
-                uiSlot.SetEmpty();
-                continue;
-            }
+	private void EnsureSlots()
+	{
+		if (hotbar == null)
+			return;
 
-            string displayName = registry != null
-                ? registry.NameOf(slot.itemId)
-                : $"Item {slot.itemId}";
+		int desiredCount =
+			hotbar.SlotCount;
 
-            uiSlot.SetItem(displayName, slot.count);
-        }
-    }
+		if (uiSlots != null &&
+			uiSlots.Length == desiredCount)
+		{
+			return;
+		}
+
+		BuildSlots(
+			desiredCount);
+	}
+
+	private void BuildSlots(
+		int count)
+	{
+		if (slotParent == null ||
+			slotPrefab == null)
+		{
+			return;
+		}
+
+		for (int i =
+				 slotParent.childCount - 1;
+			 i >= 0;
+			 i--)
+		{
+			Destroy(
+				slotParent
+					.GetChild(i)
+					.gameObject);
+		}
+
+		uiSlots =
+			new HotbarUISlot[
+				Mathf.Max(0, count)];
+
+		for (int i = 0;
+			 i < uiSlots.Length;
+			 i++)
+		{
+			uiSlots[i] =
+				Instantiate(
+					slotPrefab,
+					slotParent);
+		}
+	}
+
+	private void RefreshAll()
+	{
+		if (hotbar == null)
+			return;
+
+		EnsureSlots();
+
+		if (uiSlots == null)
+			return;
+
+		ItemRegistry registry =
+			hotbar.Registry;
+
+		for (int i = 0;
+			 i < uiSlots.Length;
+			 i++)
+		{
+			HotbarUISlot uiSlot =
+				uiSlots[i];
+
+			HotbarSlot slot =
+				hotbar.GetSlot(i);
+
+			uiSlot.SetSelected(
+				i ==
+				hotbar.SelectedIndex);
+
+			if (slot == null ||
+				slot.IsEmpty)
+			{
+				uiSlot.SetEmpty();
+				continue;
+			}
+
+			string displayName =
+				registry != null
+					? registry.NameOf(
+						slot.itemId)
+					: $"Item {slot.itemId}";
+
+			uiSlot.SetItem(
+				displayName,
+				slot.count);
+		}
+	}
 }

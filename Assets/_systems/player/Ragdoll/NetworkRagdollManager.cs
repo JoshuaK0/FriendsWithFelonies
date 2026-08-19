@@ -596,14 +596,14 @@ public sealed class NetworkRagdollManager : NetworkBehaviour
 
 			body.isKinematic = true;
 			body.useGravity = false;
-			body.detectCollisions = false;
+			body.detectCollisions = true;
 		}
 
-		foreach (Collider ragdollCollider in ragdollColliders)
+/*		foreach (Collider ragdollCollider in ragdollColliders)
 		{
 			if (ragdollCollider != null)
 				ragdollCollider.enabled = false;
-		}
+		}*/
 	}
 
 	private void CreateBuffers()

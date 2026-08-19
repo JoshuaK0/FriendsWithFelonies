@@ -37,6 +37,9 @@ public class PlayerCharacter : NetworkBehaviour
 
 	[SerializeField] NetworkRagdollManager ragdollManager;
 
+	[SerializeField] NetHotbarInventory inventory;
+	[SerializeField] GameObject inventoryObject;
+
 	private readonly SyncVar<int> teamId =
 		new(PlayerTeams.NoTeamId);
 
@@ -148,6 +151,10 @@ public class PlayerCharacter : NetworkBehaviour
 		{
 			obj.SetActive(false);
 		}
+
+		inventory?.UnequipCurrentItem();
+
+		inventoryObject.SetActive(false);
 	}
 
 	private static void SetObjectsActive(

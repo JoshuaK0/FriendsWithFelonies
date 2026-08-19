@@ -653,13 +653,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.8
-  m_Radius: 0.25
+  m_Height: 1.55
+  m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.025
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.9, z: 0}
+  m_Center: {x: 0, y: 0.775, z: 0}
 --- !u!114 &1749696904394269832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -674,24 +674,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 2
   runSpeed: 3.75
-  sprintSpeed: 7
+  sprintSpeed: 5.5
   crouchSpeed: 2
+  movementAcceleration: 40
+  movementDeceleration: 20
+  airControlMultiplier: 0.5
   walkKey: 308
   toggleWalk: 1
   sprintKey: 304
   toggleSprint: 1
+  minimumSprintForwardVelocity: 4.75
+  sprintLowSpeedExitDelay: 0.2
+  playerCamera: {fileID: 139788028713568210}
+  normalFov: 70
+  sprintFov: 80
+  fovTransitionSpeed: 10
   jumpKey: 32
   jumpHeight: 1.5
-  gravity: -20
+  gravity: -25
   groundedForce: -2
   terminalVelocity: -50
   cameraHolder: {fileID: 345099769804867941}
   crouchKey: 306
   toggleCrouch: 1
   standingHeight: 1.7
-  crouchingHeight: 1.2
+  crouchingHeight: 1.05
   crouchingCameraOffset: -0.5
   crouchTransitionSpeed: 10
+  ladderJumpKey: 32
+  ladderJumpUpwardVelocity: 7
+  ladderJumpLookVelocity: 8
+  ladderJumpHorizontalDeceleration: 8
+  ladderExitOffset: 0.15
+  ladderExitObstructionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  clearanceCheckInset: 0.02
+  platformClearance: 0.02
 --- !u!114 &2759136984111670214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -783,7 +802,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 0
+  <PrefabId>k__BackingField: 16
   <SpawnableCollectionId>k__BackingField: 0
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 9586939163050022936
@@ -820,6 +839,8 @@ MonoBehaviour:
   healthManager: {fileID: 693992835680449609}
   charControllerServiceLocator: {fileID: 7959285440729032797}
   ragdollManager: {fileID: 5965263055290614631}
+  inventory: {fileID: 5348870254037004581}
+  inventoryObject: {fileID: 8193513785952149291}
 --- !u!114 &6063936326324074263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1167,7 +1188,8 @@ MonoBehaviour:
   _componentIndexCache: 24
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
-  ladderPrefab: {fileID: 0}
+  ladderPrefab: {fileID: 1582105141787806705, guid: 8eedf74e68089d242a652d92e66f0d8b,
+    type: 3}
 --- !u!1 &2807454672423658327
 GameObject:
   m_ObjectHideFlags: 0
@@ -1374,8 +1396,8 @@ MonoBehaviour:
   _componentIndexCache: 30
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
-  tripWirePrefab: {fileID: 0}
-  teamIdSource: {fileID: 0}
+  tripWirePrefab: {fileID: 7872001716877330639, guid: c632eb331184dfa4cb1401895b52caaa,
+    type: 3}
 --- !u!1 &3210003688115813824
 GameObject:
   m_ObjectHideFlags: 0
@@ -1812,7 +1834,8 @@ MonoBehaviour:
   _componentIndexCache: 29
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
-  tightRopePrefab: {fileID: 0}
+  tightRopePrefab: {fileID: 7049193472567507157, guid: b5ee0c70520abc14496da45ea283cb3b,
+    type: 3}
 --- !u!1 &4325682462636411772
 GameObject:
   m_ObjectHideFlags: 0
@@ -1910,8 +1933,8 @@ MonoBehaviour:
   _componentIndexCache: 28
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
-  stickyCameraPrefab: {fileID: 0}
-  teamIdSource: {fileID: 0}
+  stickyCameraPrefab: {fileID: 3081792528817178950, guid: aa351a387a3b54646907d845e69daef3,
+    type: 3}
 --- !u!1 &4843703367221888677
 GameObject:
   m_ObjectHideFlags: 0
@@ -2951,7 +2974,6 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
   registry: {fileID: 11400000, guid: 70252e3e247a8444c99b9b9f44d8afa8, type: 2}
-  slotCount: 3
   selectedIndex: 0
   holdPoint: {fileID: 1623559542310507743}
   heldItemVisual: {fileID: 0}
@@ -3267,7 +3289,8 @@ MonoBehaviour:
   _componentIndexCache: 17
   _addedNetworkObject: {fileID: 7001832778570804182}
   _networkObjectCache: {fileID: 7001832778570804182}
-  drillPrefab: {fileID: 0}
+  drillPrefab: {fileID: 2680390889208228742, guid: 625b02e23dd4f2840902c3ddb448e40d,
+    type: 3}
 --- !u!1 &9213888722380497159
 GameObject:
   m_ObjectHideFlags: 0
@@ -3492,9 +3515,57 @@ PrefabInstance:
       propertyPath: m_Name
       value: Character_Male_SWAT_01
       objectReference: {fileID: 0}
+    - target: {fileID: 100468, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 112914, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 117972, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 125956, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
       propertyPath: m_Layer
       value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 140694, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 143118, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 154916, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 167022, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 169294, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 169566, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 186502, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 191662, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 195090, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 444644, guid: cf78ac9b09f3f284f8988b9e77af54bb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3814,7 +3885,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -3929,7 +4000,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -4050,7 +4121,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -4165,7 +4236,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -4280,7 +4351,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -4393,7 +4464,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -4460,7 +4531,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -4575,7 +4646,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -4690,7 +4761,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -4803,7 +4874,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -4918,7 +4989,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -5042,6 +5113,11 @@ PrefabInstance:
         type: 3}
       propertyPath: <IsNested>k__BackingField
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 39435427631781378, guid: 5242e49e5bde1054e9ff5a345a9997b1,
+        type: 3}
+      propertyPath: <PrefabId>k__BackingField
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 39435427631781378, guid: 5242e49e5bde1054e9ff5a345a9997b1,
         type: 3}

@@ -30,6 +30,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8938445425047521629}
   - {fileID: 1006389283091890084}
   - {fileID: 8982498135168439610}
   m_Father: {fileID: 0}
@@ -46,6 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c128ed574a8a7478701a504250f8b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridSize: 1
+  shiftGridSize: 0.25
 --- !u!1 &1685893422262773312
 GameObject:
   m_ObjectHideFlags: 0
@@ -262,3 +265,87 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1001 &4006356713657819422
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3751631428292858480}
+    m_Modifications:
+    - target: {fileID: 3793615645912901450, guid: c77d91eb0459bb94c84603660348a659,
+        type: 3}
+      propertyPath: <IsNested>k__BackingField
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3793615645912901450, guid: c77d91eb0459bb94c84603660348a659,
+        type: 3}
+      propertyPath: <ComponentIndex>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445640255526873155, guid: c77d91eb0459bb94c84603660348a659,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445640255526873155, guid: c77d91eb0459bb94c84603660348a659,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445640255526873155, guid: c77d91eb0459bb94c84603660348a659,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445640255526873155, guid: c77d91eb0459bb94c84603660348a659,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445640255526873155, guid: c77d91eb0459bb94c84603660348a659,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445640255526873155, guid: c77d91eb0459bb94c84603660348a659,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445640255526873155, guid: c77d91eb0459bb94c84603660348a659,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445640255526873155, guid: c77d91eb0459bb94c84603660348a659,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445640255526873155, guid: c77d91eb0459bb94c84603660348a659,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445640255526873155, guid: c77d91eb0459bb94c84603660348a659,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6216016675834587608, guid: c77d91eb0459bb94c84603660348a659,
+        type: 3}
+      propertyPath: m_Name
+      value: VentDoorInteractable
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c77d91eb0459bb94c84603660348a659, type: 3}
+--- !u!4 &8938445425047521629 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5445640255526873155, guid: c77d91eb0459bb94c84603660348a659,
+    type: 3}
+  m_PrefabInstance: {fileID: 4006356713657819422}
+  m_PrefabAsset: {fileID: 0}

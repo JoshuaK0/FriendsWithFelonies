@@ -78,8 +78,8 @@ MonoBehaviour:
   bombCollider: {fileID: 1868489995818900583}
   normalOffset: 0.01
   damage: 100
-  explosionRadius: 5
-  force: 0
+  explosionRadius: 10
+  force: 5
   damageFalloff:
     serializedVersion: 2
     m_Curve:
@@ -106,10 +106,10 @@ MonoBehaviour:
     m_RotationOrder: 4
   clippingLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 1
   damageLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 256
   armTime: 1
   fxLifetime: 2
   audioSource: {fileID: 7639575177238984378}
@@ -160,7 +160,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 0
+  <PrefabId>k__BackingField: 26
   <SpawnableCollectionId>k__BackingField: 0
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 9157378370496525309

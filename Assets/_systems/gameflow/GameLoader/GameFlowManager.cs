@@ -77,6 +77,16 @@ public class GameFlowManager : NetworkBehaviour
 	public event Action<int> OnRoundFinished;
 	public event Action<int, RoundEndReason> OnRoundEnded;
 
+	/// <summary>
+	/// Fired on every client when the cops win a round.
+	/// </summary>
+	public event Action OnCopsWin;
+
+	/// <summary>
+	/// Fired on every client when the robbers win a round.
+	/// </summary>
+	public event Action OnRobbersWin;
+
 	public event Action OnTeamTypesCycled;
 
 	/// <summary>
@@ -600,6 +610,21 @@ public class GameFlowManager : NetworkBehaviour
 	{
 		OnRoundFinished?.Invoke(round);
 		OnRoundEnded?.Invoke(round, endReason);
+
+		switch (endReason)
+		{
+			case RoundEndReason.AllRobbersCaptured:
+				OnCopsWin?.Invoke();
+				break;
+
+			case RoundEndReason.LootStolen:
+				OnRobbersWin?.Invoke();
+				break;
+
+			case RoundEndReason.TimeExpired:
+				OnCopsWin?.Invoke();
+				break;
+		}
 	}
 
 	[ObserversRpc(RunLocally = true)]

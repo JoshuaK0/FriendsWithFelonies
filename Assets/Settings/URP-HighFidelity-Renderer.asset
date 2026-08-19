@@ -15,7 +15,7 @@ MonoBehaviour:
   m_Active: 0
   settings:
     passTag: Thermal Goggles
-    Event: 300
+    Event: 500
     filterSettings:
       RenderQueueType: 0
       LayerMask:
