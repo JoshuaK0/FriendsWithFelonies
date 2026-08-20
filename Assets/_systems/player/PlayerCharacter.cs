@@ -174,6 +174,18 @@ public class PlayerCharacter : NetworkBehaviour
 		SyncTeam();
 	}
 
+	public void TogglePause(bool paused)
+	{
+		if(paused)
+		{
+			inventory.SetPaused(true);
+		}
+		else
+		{
+			inventory.SetPaused(false);
+		}
+	}
+
 	[Server]
 	private void SyncTeam()
 	{

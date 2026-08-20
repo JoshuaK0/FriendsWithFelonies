@@ -6,123 +6,74 @@ public class NetHotbarInventory : NetworkBehaviour
 	public static NetHotbarInventory Instance;
 
 	[Header("Item Data")]
-	[SerializeField]
-	private ItemRegistry registry;
+	[SerializeField] private ItemRegistry registry;
 
 	[Header("Selection")]
-	[SerializeField]
-	private int selectedIndex;
+	[SerializeField] private int selectedIndex;
 
 	[Header("Held Item")]
-	[SerializeField]
-	private Transform holdPoint;
-
-	[SerializeField]
-	private NetHeldItemVisual heldItemVisual;
-
-	[SerializeField]
-	private ItemServiceLocator itemServices;
+	[SerializeField] private Transform holdPoint;
+	[SerializeField] private NetHeldItemVisual heldItemVisual;
+	[SerializeField] private ItemServiceLocator itemServices;
 
 	private PlayerInventory inventory;
-
 	private GameObject heldInstance;
 	private IUsableItem heldUsable;
-
 	private int heldItemId = -1;
 
-	// Prevents this body from equipping anything.
-	// Used when the player dies.
 	private bool allowHeldItem = true;
-
-	// Prevents inventory / held-item interaction while paused.
-	// Does NOT hide or unequip the held item.
 	private bool isPaused;
 
-	public int SlotCount =>
-		inventory != null
-			? inventory.SlotCount
-			: 0;
+	public int SlotCount => inventory != null ? inventory.SlotCount : 0;
+	public int SelectedIndex => selectedIndex;
+	public ItemRegistry Registry => registry;
+	public ItemServiceLocator ItemServices => itemServices;
+	public PlayerInventory Inventory => inventory;
+	public bool IsPaused => isPaused;
 
-	public int SelectedIndex =>
-		selectedIndex;
-
-	public ItemRegistry Registry =>
-		registry;
-
-	public ItemServiceLocator ItemServices =>
-		itemServices;
-
-	public PlayerInventory Inventory =>
-		inventory;
-
-	public bool IsPaused =>
-		isPaused;
-
-	public bool CanUseHeldItem =>
+	public bool CanProcessPlayerInput =>
+		IsOwner &&
 		!isPaused &&
-		allowHeldItem &&
-		IsOwner;
+		allowHeldItem;
 
-	public delegate void HotbarChanged(
-		int selectedIndex);
-
+	public delegate void HotbarChanged(int selectedIndex);
 	public event HotbarChanged OnHotbarChanged;
 
 	private void Awake()
 	{
 		if (itemServices == null)
-		{
-			itemServices =
-				GetComponent<ItemServiceLocator>();
-		}
+			itemServices = GetComponent<ItemServiceLocator>();
 
 		if (itemServices == null)
-		{
-			itemServices =
-				GetComponentInParent<ItemServiceLocator>();
-		}
+			itemServices = GetComponentInParent<ItemServiceLocator>();
 	}
 
 	private void Reset()
 	{
-		heldItemVisual =
-			GetComponent<NetHeldItemVisual>();
-
-		itemServices =
-			GetComponent<ItemServiceLocator>();
+		heldItemVisual = GetComponent<NetHeldItemVisual>();
+		itemServices = GetComponent<ItemServiceLocator>();
 
 		if (itemServices == null)
-		{
-			itemServices =
-				GetComponentInParent<ItemServiceLocator>();
-		}
+			itemServices = GetComponentInParent<ItemServiceLocator>();
 	}
 
 	public override void OnStartClient()
 	{
 		base.OnStartClient();
 
-		// Remote player bodies should never bind
-		// to our local persistent inventory.
 		if (!IsOwner)
 			return;
 
 		Instance = this;
 
-		PlayerInventory.InstanceChanged +=
-			HandleInventoryInstanceChanged;
-
-		BindInventory(
-			PlayerInventory.Instance);
+		PlayerInventory.InstanceChanged += HandleInventoryInstanceChanged;
+		BindInventory(PlayerInventory.Instance);
 	}
 
 	public override void OnStopClient()
 	{
 		if (IsOwner)
-		{
-			PlayerInventory.InstanceChanged -=
-				HandleInventoryInstanceChanged;
-		}
+			PlayerInventory.InstanceChanged -= HandleInventoryInstanceChanged;
 
 		UnbindInventory();
 
@@ -136,73 +87,49 @@ public class NetHotbarInventory : NetworkBehaviour
 
 	private void OnDestroy()
 	{
-		PlayerInventory.InstanceChanged -=
-			HandleInventoryInstanceChanged;
+		PlayerInventory.InstanceChanged -= HandleInventoryInstanceChanged;
 
 		UnbindInventory();
 
 		if (Instance == this)
 			Instance = null;
+
+		ClearHeld();
 	}
 
-	// ==================================================
-	// Persistent inventory connection
-	// ==================================================
-
-	private void HandleInventoryInstanceChanged(
-		PlayerInventory newInventory)
+	private void HandleInventoryInstanceChanged(PlayerInventory newInventory)
 	{
 		if (!IsOwner)
 			return;
 
-		BindInventory(
-			newInventory);
+		BindInventory(newInventory);
 	}
 
-	private void BindInventory(
-		PlayerInventory newInventory)
+	private void BindInventory(PlayerInventory newInventory)
 	{
 		if (!IsOwner)
 			return;
 
 		if (inventory == newInventory)
-		{
-			if (inventory != null)
-			{
-				RefreshHeld(true);
-
-				OnHotbarChanged?.Invoke(
-					selectedIndex);
-			}
-
 			return;
-		}
 
 		if (inventory != null)
-		{
-			inventory.OnInventoryChanged -=
-				HandleInventoryChanged;
-		}
+			inventory.OnInventoryChanged -= HandleInventoryChanged;
 
-		inventory =
-			newInventory;
+		inventory = newInventory;
 
 		if (inventory == null)
 		{
 			selectedIndex = 0;
 
 			ClearHeld();
-
 			heldItemVisual?.SetHeldItem(-1);
 
-			OnHotbarChanged?.Invoke(
-				selectedIndex);
-
+			OnHotbarChanged?.Invoke(selectedIndex);
 			return;
 		}
 
-		inventory.OnInventoryChanged +=
-			HandleInventoryChanged;
+		inventory.OnInventoryChanged += HandleInventoryChanged;
 
 		selectedIndex =
 			Mathf.Clamp(
@@ -211,9 +138,7 @@ public class NetHotbarInventory : NetworkBehaviour
 				inventory.SlotCount - 1);
 
 		RefreshHeld(true);
-
-		OnHotbarChanged?.Invoke(
-			selectedIndex);
+		OnHotbarChanged?.Invoke(selectedIndex);
 	}
 
 	private void UnbindInventory()
@@ -221,9 +146,7 @@ public class NetHotbarInventory : NetworkBehaviour
 		if (inventory == null)
 			return;
 
-		inventory.OnInventoryChanged -=
-			HandleInventoryChanged;
-
+		inventory.OnInventoryChanged -= HandleInventoryChanged;
 		inventory = null;
 	}
 
@@ -233,21 +156,9 @@ public class NetHotbarInventory : NetworkBehaviour
 			return;
 
 		RefreshHeld(false);
-
-		OnHotbarChanged?.Invoke(
-			selectedIndex);
+		OnHotbarChanged?.Invoke(selectedIndex);
 	}
 
-	// ==================================================
-	// Pause
-	// ==================================================
-
-	/// <summary>
-	/// Pauses/unpauses hotbar interaction.
-	///
-	/// The currently held item remains visible and equipped.
-	/// The persistent inventory is not modified.
-	/// </summary>
 	public void SetPaused(bool paused)
 	{
 		if (!IsOwner)
@@ -256,70 +167,36 @@ public class NetHotbarInventory : NetworkBehaviour
 		isPaused = paused;
 	}
 
-	public void Pause()
-	{
-		SetPaused(true);
-	}
+	public void Pause() => SetPaused(true);
+	public void Resume() => SetPaused(false);
 
-	public void Resume()
+	public HotbarSlot GetSlot(int index)
 	{
-		SetPaused(false);
-	}
-
-	// ==================================================
-	// Slots
-	// ==================================================
-
-	public HotbarSlot GetSlot(
-		int index)
-	{
-		return inventory != null
-			? inventory.GetSlot(index)
-			: null;
+		return inventory != null ? inventory.GetSlot(index) : null;
 	}
 
 	public HotbarSlot GetSelectedSlot()
 	{
-		if (inventory == null)
-			return null;
-
-		if (selectedIndex < 0 ||
+		if (inventory == null ||
+			selectedIndex < 0 ||
 			selectedIndex >= inventory.SlotCount)
 		{
 			return null;
 		}
 
-		return inventory.GetSlot(
-			selectedIndex);
+		return inventory.GetSlot(selectedIndex);
 	}
 
 	public int GetSelectedItemId()
 	{
-		HotbarSlot slot =
-			GetSelectedSlot();
-
-		if (slot == null ||
-			slot.IsEmpty)
-		{
-			return -1;
-		}
-
-		return slot.itemId;
+		HotbarSlot slot = GetSelectedSlot();
+		return slot == null || slot.IsEmpty ? -1 : slot.itemId;
 	}
 
-	// ==================================================
-	// Selection
-	// ==================================================
-
-	public void SelectSlot(
-		int index)
+	public void SelectSlot(int index)
 	{
-		if (!IsOwner ||
-			isPaused ||
-			inventory == null)
-		{
+		if (!IsOwner || inventory == null)
 			return;
-		}
 
 		if (index < 0 ||
 			index >= inventory.SlotCount ||
@@ -328,28 +205,21 @@ public class NetHotbarInventory : NetworkBehaviour
 			return;
 		}
 
-		selectedIndex =
-			index;
-
+		selectedIndex = index;
 		RefreshHeld(true);
-
-		OnHotbarChanged?.Invoke(
-			selectedIndex);
+		OnHotbarChanged?.Invoke(selectedIndex);
 	}
 
-	public void SelectNext(
-		int direction)
+	public void SelectNext(int direction)
 	{
 		if (!IsOwner ||
-			isPaused ||
 			inventory == null ||
 			inventory.SlotCount <= 1)
 		{
 			return;
 		}
 
-		int count =
-			inventory.SlotCount;
+		int count = inventory.SlotCount;
 
 		selectedIndex =
 			direction > 0
@@ -357,23 +227,16 @@ public class NetHotbarInventory : NetworkBehaviour
 				: (selectedIndex - 1 + count) % count;
 
 		RefreshHeld(true);
-
-		OnHotbarChanged?.Invoke(
-			selectedIndex);
+		OnHotbarChanged?.Invoke(selectedIndex);
 	}
 
-	// ==================================================
-	// Inventory facade
-	// ==================================================
+	// These facade methods are intentionally NOT pause-blocked.
+	// Pause only blocks player input entry points.
 
-	public bool WouldAcceptPickup(
-		int itemId)
+	public bool WouldAcceptPickup(int itemId)
 	{
-		if (isPaused ||
-			inventory == null)
-		{
+		if (inventory == null)
 			return false;
-		}
 
 		return inventory.WouldAcceptPickup(
 			itemId,
@@ -389,11 +252,8 @@ public class NetHotbarInventory : NetworkBehaviour
 		swappedOutItemId = -1;
 		swappedOutCount = 0;
 
-		if (isPaused ||
-			inventory == null)
-		{
+		if (inventory == null)
 			return false;
-		}
 
 		return inventory.TryAddPickup(
 			itemId,
@@ -403,15 +263,10 @@ public class NetHotbarInventory : NetworkBehaviour
 			out swappedOutCount);
 	}
 
-	public bool ConsumeOneConfirmed(
-		int itemId)
+	public bool ConsumeOneConfirmed(int itemId)
 	{
-		if (!IsOwner ||
-			isPaused ||
-			inventory == null)
-		{
+		if (!IsOwner || inventory == null)
 			return false;
-		}
 
 		return inventory.ConsumeOne(
 			itemId,
@@ -419,41 +274,27 @@ public class NetHotbarInventory : NetworkBehaviour
 			selectedIndex);
 	}
 
-	public bool RemoveOneOfType(
-		int itemId)
+	public bool RemoveOneOfType(int itemId)
 	{
-		return ConsumeOneConfirmed(
-			itemId);
+		return ConsumeOneConfirmed(itemId);
 	}
 
-	public bool ContainsItem(
-		int itemId)
+	public bool ContainsItem(int itemId)
 	{
-		return inventory != null &&
-			   inventory.ContainsItem(
-				   itemId);
+		return inventory != null && inventory.ContainsItem(itemId);
 	}
 
-	public int GetItemCount(
-		int itemId)
+	public int GetItemCount(int itemId)
 	{
-		return inventory != null
-			? inventory.GetItemCount(
-				itemId)
-			: 0;
+		return inventory != null ? inventory.GetItemCount(itemId) : 0;
 	}
 
-	public bool RemoveEmptyItem(
-		int itemId)
+	public bool RemoveEmptyItem(int itemId)
 	{
-		if (!IsOwner ||
-			inventory == null)
-		{
+		if (!IsOwner || inventory == null)
 			return false;
-		}
 
-		return inventory.RemoveEmptyItem(
-			itemId);
+		return inventory.RemoveEmptyItem(itemId);
 	}
 
 	public void NotifyChanged()
@@ -461,16 +302,6 @@ public class NetHotbarInventory : NetworkBehaviour
 		inventory?.NotifyInventoryChanged();
 	}
 
-	// ==================================================
-	// Death / unequip
-	// ==================================================
-
-	/// <summary>
-	/// Unequips the current item without removing it
-	/// from the persistent inventory.
-	///
-	/// Intended for player death.
-	/// </summary>
 	public void UnequipCurrentItem()
 	{
 		if (!IsOwner)
@@ -479,112 +310,62 @@ public class NetHotbarInventory : NetworkBehaviour
 		allowHeldItem = false;
 
 		ClearHeld();
-
 		heldItemVisual?.SetHeldItem(-1);
 	}
 
-	/// <summary>
-	/// Allows this body to equip items again.
-	/// Normally not necessary after respawning because
-	/// the new player prefab starts with allowHeldItem=true.
-	/// </summary>
 	public void ReequipCurrentItem()
 	{
 		if (!IsOwner)
 			return;
 
 		allowHeldItem = true;
-
 		RefreshHeld(true);
 	}
 
-	// ==================================================
-	// Held item
-	// ==================================================
-
-	private void RefreshHeld(
-		bool force)
+	private void RefreshHeld(bool force)
 	{
-		if (!IsOwner)
-			return;
-
-		if (!allowHeldItem)
+		if (!IsOwner || !allowHeldItem)
 			return;
 
 		if (inventory == null)
 		{
 			ClearHeld();
-
 			heldItemVisual?.SetHeldItem(-1);
-
 			return;
 		}
 
-		int itemId =
-			GetSelectedItemId();
+		int itemId = GetSelectedItemId();
 
-		if (!force &&
-			itemId == heldItemId)
-		{
+		if (!force && itemId == heldItemId)
 			return;
-		}
 
 		ClearHeld();
 
-		heldItemId =
-			itemId;
+		heldItemId = itemId;
+		heldItemVisual?.SetHeldItem(itemId);
 
-		heldItemVisual?.SetHeldItem(
-			itemId);
-
-		if (itemId < 0 ||
-			holdPoint == null ||
-			registry == null)
-		{
+		if (itemId < 0 || holdPoint == null || registry == null)
 			return;
-		}
 
-		GameObject heldPrefab =
-			registry.HeldPrefabOf(
-				itemId);
+		GameObject heldPrefab = registry.HeldPrefabOf(itemId);
 
 		if (heldPrefab == null)
 			return;
 
-		heldInstance =
-			Instantiate(
-				heldPrefab,
-				holdPoint);
-
-		heldInstance.transform.localPosition =
-			Vector3.zero;
-
-		heldInstance.transform.localRotation =
-			Quaternion.identity;
+		heldInstance = Instantiate(heldPrefab, holdPoint);
+		heldInstance.transform.localPosition = Vector3.zero;
+		heldInstance.transform.localRotation = Quaternion.identity;
 
 		MonoBehaviour[] behaviours =
-			heldInstance.GetComponentsInChildren
-			<MonoBehaviour>(true);
+			heldInstance.GetComponentsInChildren<MonoBehaviour>(true);
 
-		for (int i = 0;
-			 i < behaviours.Length;
-			 i++)
+		for (int i = 0; i < behaviours.Length; i++)
 		{
-			if (behaviours[i] is
-				IHotbarItemContextReceiver receiver)
-			{
-				receiver.InitializeHotbarItem(
-					this,
-					itemId);
-			}
+			if (behaviours[i] is IHotbarItemContextReceiver receiver)
+				receiver.InitializeHotbarItem(this, itemId);
 
-			if (heldUsable == null &&
-				behaviours[i] is
-				IUsableItem usable)
-			{
-				heldUsable =
-					usable;
-			}
+			if (heldUsable == null && behaviours[i] is IUsableItem usable)
+				heldUsable = usable;
 		}
 
 		heldUsable?.OnEquip();
@@ -592,15 +373,15 @@ public class NetHotbarInventory : NetworkBehaviour
 
 	private void ClearHeld()
 	{
-		heldUsable?.OnUnequip();
-
-		heldUsable = null;
+		if (heldUsable != null)
+		{
+			heldUsable.OnUnequip();
+			heldUsable = null;
+		}
 
 		if (heldInstance != null)
 		{
-			Destroy(
-				heldInstance);
-
+			Destroy(heldInstance);
 			heldInstance = null;
 		}
 

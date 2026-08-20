@@ -2,50 +2,73 @@ using UnityEngine;
 
 public sealed class FlashlightItem : HotbarHeldItem
 {
-    [SerializeField] private GameObject localFlashlightObject;
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip toggleClip;
-    [SerializeField] private bool startsEnabled;
+	[SerializeField] private GameObject localFlashlightObject;
 
-    private FlashlightItemNetworked networkedCounterpart;
-    private bool enabledState;
+	[Header("Audio")]
+	[SerializeField] private AudioSource audioSource;
+	[SerializeField] private AudioClip toggleOnClip;
+	[SerializeField] private AudioClip toggleOffClip;
 
-    protected override void OnContextInitialized()
-    {
-        networkedCounterpart = ItemServices != null ? ItemServices.GetNetworkedFlashlight() : null;
-    }
+	[Header("Settings")]
+	[SerializeField] private bool startsEnabled;
 
-    protected override void OnEquipped()
-    {
-        enabledState = startsEnabled;
-        ApplyLocalState();
-        networkedCounterpart?.RequestSetFlashlight(enabledState);
-    }
+	private FlashlightItemNetworked networkedCounterpart;
+	private bool enabledState;
 
-    protected override void OnEquippedUpdate()
-    {
-        if (!Input.GetMouseButtonDown(0))
-            return;
+	protected override void OnContextInitialized()
+	{
+		networkedCounterpart =
+			ItemServices != null
+				? ItemServices.GetNetworkedFlashlight()
+				: null;
+	}
 
-        enabledState = !enabledState;
-        ApplyLocalState();
+	protected override void OnEquipped()
+	{
+		enabledState = startsEnabled;
 
-        if (audioSource != null && toggleClip != null)
-            audioSource.PlayOneShot(toggleClip);
+		ApplyLocalState();
+		networkedCounterpart?.RequestSetFlashlight(enabledState);
+	}
 
-        networkedCounterpart?.RequestSetFlashlight(enabledState);
-    }
+	protected override void OnEquippedUpdate()
+	{
+		if (!Input.GetMouseButtonDown(0))
+			return;
 
-    protected override void OnUnequipped()
-    {
-        enabledState = false;
-        ApplyLocalState();
-        networkedCounterpart?.RequestSetFlashlight(false);
-    }
+		enabledState = !enabledState;
 
-    private void ApplyLocalState()
-    {
-        if (localFlashlightObject != null)
-            localFlashlightObject.SetActive(enabledState);
-    }
+		ApplyLocalState();
+		PlayToggleSound();
+
+		networkedCounterpart?.RequestSetFlashlight(enabledState);
+	}
+
+	protected override void OnUnequipped()
+	{
+		enabledState = false;
+
+		ApplyLocalState();
+		networkedCounterpart?.RequestSetFlashlight(false);
+	}
+
+	private void ApplyLocalState()
+	{
+		if (localFlashlightObject != null)
+			localFlashlightObject.SetActive(enabledState);
+	}
+
+	private void PlayToggleSound()
+	{
+		if (audioSource == null)
+			return;
+
+		AudioClip clip =
+			enabledState
+				? toggleOnClip
+				: toggleOffClip;
+
+		if (clip != null)
+			audioSource.PlayOneShot(clip);
+	}
 }

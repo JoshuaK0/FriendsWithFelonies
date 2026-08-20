@@ -76,6 +76,8 @@ public class ShopWindowToggle : MonoBehaviour
 		}
 
 		PlayRandomShopTrack();
+
+		MyClient.Instance.PlayerManager.LocalPlayerController.GetComponent<PlayerCharacter>().TogglePause(true);
 	}
 
 	private void CloseShop()
@@ -97,6 +99,9 @@ public class ShopWindowToggle : MonoBehaviour
 		}
 
 		FadeOutShopMusic();
+
+		MyClient.Instance.PlayerManager.LocalPlayerController.GetComponent<PlayerCharacter>().TogglePause(false);
+
 	}
 
 	private void PlayRandomShopTrack()

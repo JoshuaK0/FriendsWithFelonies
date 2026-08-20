@@ -49,7 +49,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localFlashlightObject: {fileID: 6587621543463324094}
   audioSource: {fileID: 972113794987506827}
-  toggleClip: {fileID: 8300000, guid: 503de6bf0c32f134f96d4a92662f3e45, type: 3}
+  toggleOnClip: {fileID: 0}
+  toggleOffClip: {fileID: 0}
   startsEnabled: 0
 --- !u!82 &972113794987506827
 AudioSource:
@@ -278,13 +279,13 @@ Light:
   serializedVersion: 11
   m_Type: 0
   m_Color: {r: 0.19215687, g: 0, b: 1, a: 1}
-  m_Intensity: 1
-  m_Range: 10
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
+  m_Intensity: 50
+  m_Range: 500
+  m_SpotAngle: 90
+  m_InnerSpotAngle: 0
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -309,7 +310,7 @@ Light:
       e32: 0
       e33: 1
     m_UseCullingMatrixOverride: 0
-  m_Cookie: {fileID: 0}
+  m_Cookie: {fileID: 2800000, guid: 43377237f0d82a946aec539b9ae7d303, type: 3}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
   m_RenderMode: 0
@@ -320,7 +321,7 @@ Light:
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}

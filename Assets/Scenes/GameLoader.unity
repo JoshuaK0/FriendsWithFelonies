@@ -4532,8 +4532,7 @@ MonoBehaviour:
   <IsNested>k__BackingField: 0
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
-  _networkBehaviours:
-  - {fileID: 1730932626}
+  _networkBehaviours: []
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField: []
   SerializedTransformProperties:
@@ -4575,9 +4574,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 980e38f7826610a48b1c0e65bcae30b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 1730932625}
-  _networkObjectCache: {fileID: 1730932625}
   slotCount: 10
 --- !u!4 &1730932627
 Transform:
@@ -4674,7 +4670,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 1818894354}
   _networkObjectCache: {fileID: 1818894354}
   totalRounds: 10
-  setupDuration: 15
+  setupDuration: 60
   roundDuration: 180
   nextRoundDelay: 10
   initialTeamCoordinator: {fileID: 1329293512}

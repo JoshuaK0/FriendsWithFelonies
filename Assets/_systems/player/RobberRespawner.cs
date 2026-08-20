@@ -61,11 +61,15 @@ public sealed class RobberRespawner : MonoBehaviour
 	private void HandleRoundPhaseChanged(
 		RoundFlowPhase phase)
 	{
+		// IMPORTANT:
+		// Do not cancel an existing respawn when Setup ends.
+		//
+		// If the robber died during Setup and a respawn was
+		// successfully started, that respawn is allowed to
+		// finish even if the round becomes Ready or Active.
+
 		if (phase != RoundFlowPhase.Setup)
-		{
-			CancelRespawn();
 			return;
-		}
 
 		// Handles the case where the robber is already dead
 		// when a new setup phase begins.
@@ -78,6 +82,8 @@ public sealed class RobberRespawner : MonoBehaviour
 
 	private void HandleRoundFinished(int round)
 	{
+		// A round actually finishing should still invalidate
+		// any pending respawn.
 		CancelRespawn();
 	}
 
@@ -89,6 +95,10 @@ public sealed class RobberRespawner : MonoBehaviour
 		if (GameFlowManager.Instance == null)
 			return;
 
+		// A NEW robber respawn may only be started during Setup.
+		//
+		// This prevents robbers who die during Active from
+		// respawning.
 		if (GameFlowManager.Instance.RoundPhase !=
 			RoundFlowPhase.Setup)
 		{
@@ -128,29 +138,23 @@ public sealed class RobberRespawner : MonoBehaviour
 
 	private IEnumerator RespawnAfterDelay()
 	{
-		yield return new WaitForSeconds(setupRespawnDelay);
+		yield return new WaitForSeconds(
+			setupRespawnDelay);
 
 		respawnCoroutine = null;
 
 		if (localPlayerManager == null)
 			yield break;
 
+		// The player may already have been respawned by
+		// something else while we were waiting.
 		if (localPlayerManager.State != PlayerState.Dead)
 			yield break;
-
-		if (GameFlowManager.Instance == null)
-			yield break;
-
-		// Robbers must NEVER respawn outside setup.
-		if (GameFlowManager.Instance.RoundPhase !=
-			RoundFlowPhase.Setup)
-		{
-			yield break;
-		}
 
 		if (PlayerTeams.Instance == null)
 			yield break;
 
+		// Make sure the player is still actually a robber.
 		TeamType teamType =
 			PlayerTeams.Instance.GetPlayerTeamType(
 				localPlayerManager.PlayerId);
@@ -158,6 +162,13 @@ public sealed class RobberRespawner : MonoBehaviour
 		if (teamType != TeamType.Robber)
 			yield break;
 
+		// IMPORTANT:
+		// We deliberately do NOT check RoundPhase here.
+		//
+		// The respawn was authorized when the robber died
+		// during Setup. If Setup becomes Ready/Active while
+		// waiting, the already-authorized respawn still
+		// completes.
 		localPlayerManager.SpawnPlayer();
 	}
 }

@@ -5,81 +5,103 @@ using UnityEngine;
 
 public class NetHotbarDropper : NetworkBehaviour
 {
-    [SerializeField] private NetHotbarInventory hotbar;
-    [SerializeField] private Transform dropOrigin;
-    [SerializeField] private float forward = 1.2f;
-    [SerializeField] private float up = 0.2f;
+	[SerializeField] private NetHotbarInventory hotbar;
+	[SerializeField] private Transform dropOrigin;
+	[SerializeField] private float forward = 1.2f;
+	[SerializeField] private float up = 0.2f;
 
-    private void Reset()
-    {
-        hotbar = GetComponent<NetHotbarInventory>();
-        dropOrigin = transform;
-    }
+	private void Reset()
+	{
+		hotbar = GetComponent<NetHotbarInventory>();
+		dropOrigin = transform;
+	}
 
-    public void DropOneSelected()
-    {
-        if (!IsOwner || hotbar == null)
-            return;
+	/// <summary>
+	/// Player-input drop action. Blocked while paused/dead.
+	/// </summary>
+	public void DropOneSelected()
+	{
+		if (!IsOwner ||
+			hotbar == null ||
+			!hotbar.CanProcessPlayerInput)
+		{
+			return;
+		}
 
-        HotbarSlot selected = hotbar.GetSelectedSlot();
-        if (selected == null || selected.IsEmpty)
-            return;
+		HotbarSlot selected = hotbar.GetSelectedSlot();
 
-        int itemId = selected.itemId;
-        ItemRegistry registry = hotbar.Registry;
+		if (selected == null || selected.IsEmpty)
+			return;
 
-        if (registry == null || !registry.IsDroppable(itemId))
-            return;
+		int itemId = selected.itemId;
+		ItemRegistry registry = hotbar.Registry;
 
-        if (!hotbar.ConsumeOneConfirmed(itemId))
-            return;
+		if (registry == null || !registry.IsDroppable(itemId))
+			return;
 
-        RequestDropOne(itemId);
-    }
+		if (!hotbar.ConsumeOneConfirmed(itemId))
+			return;
 
-    /// <summary>
-    /// Used when a pickup replaces a full selected slot. The old slot has already
-    /// been removed locally, so this method only requests the world spawn.
-    /// </summary>
-    public void RequestDropOne(int itemId)
-    {
-        if (!IsOwner || hotbar == null)
-            return;
+		RequestDropOne(itemId);
+	}
 
-        ItemRegistry registry = hotbar.Registry;
-        if (registry == null || !registry.IsDroppable(itemId))
-            return;
+	/// <summary>
+	/// Programmatic world-drop request.
+	/// Intentionally NOT pause-blocked so game logic can still
+	/// create drops while player input is paused.
+	/// </summary>
+	public void RequestDropOne(int itemId)
+	{
+		if (!IsOwner || hotbar == null)
+			return;
 
-        Transform origin = dropOrigin != null ? dropOrigin : transform;
-        Vector3 position = origin.position + origin.forward * forward + Vector3.up * up;
-        DropRequestServerRpc(itemId, position, Quaternion.identity);
-    }
+		ItemRegistry registry = hotbar.Registry;
 
-    [ServerRpc]
-    private void DropRequestServerRpc(
-        int itemId,
-        Vector3 position,
-        Quaternion rotation,
-        NetworkConnection connection = null)
-    {
-        if (hotbar == null || connection == null)
-            return;
+		if (registry == null || !registry.IsDroppable(itemId))
+			return;
 
-        ItemRegistry registry = hotbar.Registry;
-        if (registry == null || !registry.IsValidItemId(itemId))
-            return;
+		Transform origin = dropOrigin != null ? dropOrigin : transform;
 
-        if (!registry.IsDroppable(itemId))
-            return;
+		Vector3 position =
+			origin.position +
+			origin.forward * forward +
+			Vector3.up * up;
 
-        if (Vector3.Distance(transform.position, position) > 4f)
-            return;
+		DropRequestServerRpc(
+			itemId,
+			position,
+			Quaternion.identity);
+	}
 
-        NetworkObject prefab = registry.WorldPrefabOf(itemId);
-        if (prefab == null)
-            return;
+	[ServerRpc]
+	private void DropRequestServerRpc(
+		int itemId,
+		Vector3 position,
+		Quaternion rotation,
+		NetworkConnection connection = null)
+	{
+		if (hotbar == null || connection == null)
+			return;
 
-        NetworkObject spawned = Instantiate(prefab, position, rotation);
-        InstanceFinder.ServerManager.Spawn(spawned.gameObject);
-    }
+		ItemRegistry registry = hotbar.Registry;
+
+		if (registry == null || !registry.IsValidItemId(itemId))
+			return;
+
+		if (!registry.IsDroppable(itemId))
+			return;
+
+		if (Vector3.Distance(transform.position, position) > 4f)
+			return;
+
+		NetworkObject prefab = registry.WorldPrefabOf(itemId);
+
+		if (prefab == null)
+			return;
+
+		NetworkObject spawned =
+			Instantiate(prefab, position, rotation);
+
+		InstanceFinder.ServerManager.Spawn(spawned.gameObject);
+	}
 }

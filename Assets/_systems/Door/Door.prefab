@@ -624,8 +624,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6727745433672328735}
-  - component: {fileID: 1794579345521083552}
   - component: {fileID: 2945781086190220311}
+  - component: {fileID: 3210953577010069396}
   m_Layer: 6
   m_Name: DoorInteractable
   m_TagString: Untagged
@@ -649,27 +649,6 @@ Transform:
   - {fileID: 770975662056201482}
   m_Father: {fileID: 1725801784543236101}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1794579345521083552
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5579834941513742878}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.5, y: 2.5, z: 0.2}
-  m_Center: {x: -0.01, y: 0.19, z: -0.002265036}
 --- !u!114 &2945781086190220311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -695,6 +674,27 @@ MonoBehaviour:
   alarmIndicator: {fileID: 2729641847851173803}
   isDoorAlarmed: 1
   alarmDelay: 3
+--- !u!135 &3210953577010069396
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5579834941513742878}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.25
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5694654881904360639
 GameObject:
   m_ObjectHideFlags: 0
@@ -931,7 +931,7 @@ Transform:
   m_GameObject: {fileID: 8768432686283103235}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.42, y: 0.03, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
