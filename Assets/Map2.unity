@@ -142449,6 +142449,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2927612825726407901, guid: 3d757535137d6be45b37daf5b9d28445,
         type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2927612825726407901, guid: 3d757535137d6be45b37daf5b9d28445,
+        type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -142464,6 +142469,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3608605738143675085, guid: 3d757535137d6be45b37daf5b9d28445,
         type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3608605738143675085, guid: 3d757535137d6be45b37daf5b9d28445,
+        type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -142471,6 +142481,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3681845230540918480, guid: 3d757535137d6be45b37daf5b9d28445,
+        type: 3}
+      propertyPath: isDoorAlarmed
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4025737720043612146, guid: 3d757535137d6be45b37daf5b9d28445,
         type: 3}
@@ -142491,6 +142506,16 @@ PrefabInstance:
         type: 3}
       propertyPath: <SceneId>k__BackingField
       value: 2952183039
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639312727511572233, guid: 3d757535137d6be45b37daf5b9d28445,
+        type: 3}
+      propertyPath: isDoorAlarmed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714982035383411476, guid: 3d757535137d6be45b37daf5b9d28445,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4714982035383411476, guid: 3d757535137d6be45b37daf5b9d28445,
         type: 3}
@@ -142566,6 +142591,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618695752637072644, guid: 3d757535137d6be45b37daf5b9d28445,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6618695752637072644, guid: 3d757535137d6be45b37daf5b9d28445,
         type: 3}
@@ -283654,6 +283684,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2927612825726407901, guid: 3d757535137d6be45b37daf5b9d28445,
         type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2927612825726407901, guid: 3d757535137d6be45b37daf5b9d28445,
+        type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -283669,6 +283704,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3608605738143675085, guid: 3d757535137d6be45b37daf5b9d28445,
         type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3608605738143675085, guid: 3d757535137d6be45b37daf5b9d28445,
+        type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -283676,6 +283716,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3681845230540918480, guid: 3d757535137d6be45b37daf5b9d28445,
+        type: 3}
+      propertyPath: isDoorAlarmed
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4025737720043612146, guid: 3d757535137d6be45b37daf5b9d28445,
         type: 3}
@@ -283696,6 +283741,16 @@ PrefabInstance:
         type: 3}
       propertyPath: <SceneId>k__BackingField
       value: 2951134335
+      objectReference: {fileID: 0}
+    - target: {fileID: 4639312727511572233, guid: 3d757535137d6be45b37daf5b9d28445,
+        type: 3}
+      propertyPath: isDoorAlarmed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714982035383411476, guid: 3d757535137d6be45b37daf5b9d28445,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4714982035383411476, guid: 3d757535137d6be45b37daf5b9d28445,
         type: 3}
@@ -283771,6 +283826,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618695752637072644, guid: 3d757535137d6be45b37daf5b9d28445,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6618695752637072644, guid: 3d757535137d6be45b37daf5b9d28445,
         type: 3}
