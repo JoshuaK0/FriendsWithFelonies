@@ -50,8 +50,6 @@ public sealed class GunItem : HotbarHeldItem
 
 
 	[Header("References")]
-	[Tooltip("Uses the local player's camera when left unassigned.")]
-	[SerializeField]
 	private Transform fireOrigin;
 
 	[Tooltip("Transform used for firing recoil.")]
@@ -220,6 +218,11 @@ public sealed class GunItem : HotbarHeldItem
 				.LocalPlayerController
 				.GetComponent<CharControllerServiceLocator>()
 				.CrosshairController;
+
+		fireOrigin = MyClient.Instance.PlayerManager
+				.LocalPlayerController
+				.GetComponent<CharControllerServiceLocator>()
+				.muzzle;
 	}
 
 
@@ -367,6 +370,13 @@ public sealed class GunItem : HotbarHeldItem
 				currentBloom + bloomPerShot,
 				maximumBloom);
 
+		/*
+		 * OWNER-LOCAL PREDICTION
+		 *
+		 * These happen immediately for the shooting player.
+		 *
+		 * The server does NOT send these effects back to the owner.
+		 */
 		PlayLocalFireEffects();
 
 		SpawnImpactEffects(
@@ -375,6 +385,10 @@ public sealed class GunItem : HotbarHeldItem
 		UpdateAmmoCounter();
 		UpdateCrosshair();
 
+		/*
+		 * The server independently raycasts using the same
+		 * origin/directions and decides whether damage occurs.
+		 */
 		networkedCounterpart.RequestFire(
 			fireOrigin.position,
 			pelletDirections,
@@ -544,7 +558,7 @@ public sealed class GunItem : HotbarHeldItem
 						0.1f,
 						range),
 					hitMask,
-					QueryTriggerInteraction.Ignore))
+					QueryTriggerInteraction.Collide))
 			{
 				continue;
 			}
@@ -1029,10 +1043,6 @@ public sealed class GunItem : HotbarHeldItem
 		}
 
 
-		/*
-		 * Make sure the spin reaches exactly
-		 * the requested final angle.
-		 */
 		if (reloadSpinTransform != null &&
 			reloadSpinInitialized)
 		{
@@ -1044,11 +1054,6 @@ public sealed class GunItem : HotbarHeldItem
 		}
 
 
-		/*
-		 * A 360-degree rotation is identical to
-		 * the starting orientation, so restore
-		 * the exact original quaternion.
-		 */
 		ResetReloadSpin();
 
 

@@ -229,6 +229,7 @@ GameObject:
   - component: {fileID: 3793615645912901450}
   - component: {fileID: 1673952374064368049}
   - component: {fileID: 8254491050235559620}
+  - component: {fileID: 4533379159666095106}
   m_Layer: 6
   m_Name: VentDoorInteractable
   m_TagString: Untagged
@@ -275,8 +276,8 @@ MonoBehaviour:
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField: []
   SerializedTransformProperties:
-    Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    Position: {x: 0, y: 5, z: 5.25}
+    Rotation: {x: -0, y: -0.70710665, z: -0, w: 0.70710695}
     LocalScale: {x: 1, y: 1, z: 1}
   _isNetworked: 1
   _isSpawnable: 0
@@ -369,6 +370,20 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.25
   m_Center: {x: 0.625, y: 0.625, z: 0}
+--- !u!114 &4533379159666095106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6216016675834587608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65c128ed574a8a7478701a504250f8b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridSize: 1
+  shiftGridSize: 0.25
 --- !u!1 &6237957506960369517
 GameObject:
   m_ObjectHideFlags: 0

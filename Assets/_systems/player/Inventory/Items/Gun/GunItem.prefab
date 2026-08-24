@@ -55,7 +55,7 @@ MonoBehaviour:
   range: 100
   hitMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 257
   pelletsPerShot: 1
   ragdollForce: 20
   baseSpread: 0.5

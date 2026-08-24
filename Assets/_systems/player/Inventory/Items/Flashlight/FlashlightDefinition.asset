@@ -17,7 +17,7 @@ MonoBehaviour:
   maxStack: 1
   consumeOnEmpty: 1
   isDroppable: 1
-  isPurchasable: 0
+  isPurchasable: 1
   cost: 100
   purchaseAmount: 1
   worldPrefab: {fileID: 7315751299897416603, guid: 0825cef568d4aa34db656eb6d5ddf9ca,

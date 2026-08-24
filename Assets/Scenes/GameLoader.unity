@@ -2062,7 +2062,7 @@ PrefabInstance:
     - target: {fileID: 7875639107417973800, guid: b0d9d0e3e6a623e489d38a644c31d032,
         type: 3}
       propertyPath: text
-      value: Cops Win
+      value: Robbers Win
       objectReference: {fileID: 0}
     - target: {fileID: 7875639107417973802, guid: b0d9d0e3e6a623e489d38a644c31d032,
         type: 3}
