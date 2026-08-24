@@ -13,6 +13,7 @@ public sealed class ItemServiceLocator : MonoBehaviour
     [SerializeField] private UVFlashlightItemNetworked NetworkedUVFlashlight;
     [SerializeField] private RiotShieldItemNetworked networkedRiotShield;
     [SerializeField] private GeigerCounterItemNetworked networkedGeigerCounter;
+    [SerializeField] private DisguiseItemNetworked networkedDisguise;
 
     [Header("Placeable Items")]
     [SerializeField] private LadderItemNetworked networkedLadder;
@@ -122,5 +123,10 @@ public sealed class ItemServiceLocator : MonoBehaviour
 	public LootItemNetworked GetNetworkedLoot()
 	{
 		return networkedLoot;
+	}
+
+    public DisguiseItemNetworked GetNetworkedDisguise()
+    {
+        return networkedDisguise;
 	}
 }

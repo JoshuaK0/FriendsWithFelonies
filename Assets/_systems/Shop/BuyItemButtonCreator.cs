@@ -18,18 +18,22 @@ public class BuyItemButtonCreator : MonoBehaviour
 	[SerializeField]
 	private ItemPurchasedEvent onItemPurchased;
 
+	[Header("References")]
+	[SerializeField]
+	ShopWindowToggle shopWindowToggle;
+
 	[System.Serializable]
 	public class ItemPurchasedEvent :
 		UnityEvent<int, ItemDefinition>
 	{
 	}
 
-	private void Start()
+	private void Awake()
 	{
-		MyClient.Instance.PlayerManager.OnLocalPlayerSpawned += CreateButtons;
+		shopWindowToggle.OnShopOpened += CreateButtons;
 	}
 
-	public void CreateButtons(GameObject player)
+	public void CreateButtons()
 	{
 		ClearButtons();
 

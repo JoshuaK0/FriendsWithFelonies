@@ -1,3 +1,4 @@
+using System.Collections;
 using FishNet.Object;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ public class CharacterOutline : NetworkBehaviour
 	private PlayerCharacter playerCharacter;
 
 	private PlayerCharacter localPlayer;
+	private Coroutine initializationCoroutine;
 
 	public override void OnStartClient()
 	{
@@ -28,7 +30,7 @@ public class CharacterOutline : NetworkBehaviour
 		if (outlineObject == null)
 			outlineObject = gameObject;
 
-		// Never change the owner's layer.
+		// The local player's own character does not need an outline.
 		if (IsOwner)
 			return;
 
@@ -41,7 +43,8 @@ public class CharacterOutline : NetworkBehaviour
 		PlayerTeams.OnTeamDataChanged +=
 			HandleTeamDataChanged;
 
-		RefreshOutline();
+		initializationCoroutine =
+			StartCoroutine(InitializeWhenReady());
 	}
 
 	public override void OnStopClient()
@@ -56,9 +59,37 @@ public class CharacterOutline : NetworkBehaviour
 
 			PlayerTeams.OnTeamDataChanged -=
 				HandleTeamDataChanged;
+
+			if (initializationCoroutine != null)
+			{
+				StopCoroutine(initializationCoroutine);
+				initializationCoroutine = null;
+			}
 		}
 
 		base.OnStopClient();
+	}
+
+	private IEnumerator InitializeWhenReady()
+	{
+		while (true)
+		{
+			if (GameFlowManager.Instance != null &&
+				PlayerTeams.Instance != null &&
+				playerCharacter != null)
+			{
+				localPlayer = GetLocalPlayer();
+
+				if (localPlayer != null)
+					break;
+			}
+
+			yield return null;
+		}
+
+		initializationCoroutine = null;
+
+		RefreshOutline();
 	}
 
 	private void HandleRoundPhaseChanged(
@@ -69,8 +100,6 @@ public class CharacterOutline : NetworkBehaviour
 
 	private void HandleTeamDataChanged()
 	{
-		// Local player may not have existed when this
-		// CharacterOutline first started.
 		localPlayer = GetLocalPlayer();
 
 		RefreshOutline();
@@ -102,7 +131,15 @@ public class CharacterOutline : NetworkBehaviour
 		int playerTeamId =
 			playerCharacter.TeamId;
 
-		// Same team is always visible as an ally.
+		// Don't evaluate team relationships before team assignment.
+		if (localTeamId == PlayerTeams.NoTeamId ||
+			playerTeamId == PlayerTeams.NoTeamId)
+		{
+			SetLayer(defaultLayer);
+			return;
+		}
+
+		// Same team is always visible.
 		if (localTeamId == playerTeamId)
 		{
 			SetLayer(allyOutlineLayer);
@@ -119,7 +156,7 @@ public class CharacterOutline : NetworkBehaviour
 			return;
 		}
 
-		// Enemy outline disappears when setup finishes.
+		// Enemy outlines disappear once setup finishes.
 		SetLayer(defaultLayer);
 	}
 
@@ -142,7 +179,8 @@ public class CharacterOutline : NetworkBehaviour
 
 	private void SetLayer(string layerName)
 	{
-		int layer = LayerMask.NameToLayer(layerName);
+		int layer =
+			LayerMask.NameToLayer(layerName);
 
 		if (layer == -1)
 		{

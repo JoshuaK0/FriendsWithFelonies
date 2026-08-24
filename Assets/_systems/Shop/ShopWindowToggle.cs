@@ -4,6 +4,11 @@ using Evo.UI;
 
 public class ShopWindowToggle : MonoBehaviour
 {
+	public delegate void ShopEventHandler();
+
+	public event ShopEventHandler OnShopOpened;
+	public event ShopEventHandler OnShopClosed;
+
 	[Header("Shop Window")]
 	[SerializeField]
 	private ModalWindow shopWindow;
@@ -66,9 +71,6 @@ public class ShopWindowToggle : MonoBehaviour
 
 		Cursor.visible = true;
 
-		/*
-		 * Fade out the normal soundtrack.
-		 */
 		if (SoundtrackController.Instance != null)
 		{
 			SoundtrackController.Instance
@@ -77,7 +79,13 @@ public class ShopWindowToggle : MonoBehaviour
 
 		PlayRandomShopTrack();
 
-		MyClient.Instance.PlayerManager.LocalPlayerController.GetComponent<PlayerCharacter>().TogglePause(true);
+		MyClient.Instance
+			.PlayerManager
+			.LocalPlayerController
+			.GetComponent<PlayerCharacter>()
+			.TogglePause(true);
+
+		OnShopOpened?.Invoke();
 	}
 
 	private void CloseShop()
@@ -89,9 +97,6 @@ public class ShopWindowToggle : MonoBehaviour
 
 		Cursor.visible = false;
 
-		/*
-		 * Fade the normal soundtrack back in.
-		 */
 		if (SoundtrackController.Instance != null)
 		{
 			SoundtrackController.Instance
@@ -100,8 +105,13 @@ public class ShopWindowToggle : MonoBehaviour
 
 		FadeOutShopMusic();
 
-		MyClient.Instance.PlayerManager.LocalPlayerController.GetComponent<PlayerCharacter>().TogglePause(false);
+		MyClient.Instance
+			.PlayerManager
+			.LocalPlayerController
+			.GetComponent<PlayerCharacter>()
+			.TogglePause(false);
 
+		OnShopClosed?.Invoke();
 	}
 
 	private void PlayRandomShopTrack()

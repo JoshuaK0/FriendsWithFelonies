@@ -2092,7 +2092,7 @@ PrefabInstance:
     - target: {fileID: 7875639108128752446, guid: b0d9d0e3e6a623e489d38a644c31d032,
         type: 3}
       propertyPath: text
-      value: Cops Win
+      value: Robbers Win
       objectReference: {fileID: 0}
     - target: {fileID: 7875639108128752447, guid: b0d9d0e3e6a623e489d38a644c31d032,
         type: 3}
@@ -2267,6 +2267,7 @@ MonoBehaviour:
   onItemPurchased:
     m_PersistentCalls:
       m_Calls: []
+  shopWindowToggle: {fileID: 1062326963}
 --- !u!114 &903697321
 MonoBehaviour:
   m_ObjectHideFlags: 0
