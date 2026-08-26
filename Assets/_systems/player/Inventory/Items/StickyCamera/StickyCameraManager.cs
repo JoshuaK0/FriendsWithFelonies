@@ -7,67 +7,125 @@ using UnityEngine;
 /// </summary>
 public sealed class StickyCameraManager : MonoBehaviour
 {
-    public static StickyCameraManager Instance;
+	public static StickyCameraManager Instance { get; private set; }
 
-    private readonly List<StickyCameraProp> cameraList = new();
+	[SerializeField, Min(0.05f)]
+	private float emptyListRetryInterval = 0.25f;
 
-    private void Awake()
-    {
-        Instance = this;
-    }
+	private readonly List<StickyCameraProp> cameraList = new();
 
-    private void OnEnable()
-    {
-        StickyCameraProp.RegistryChanged += RefreshCameras;
-        RefreshCameras();
-    }
+	private int cachedTeamId = int.MinValue;
+	private float nextRetryTime;
 
-    private void OnDisable()
-    {
-        StickyCameraProp.RegistryChanged -= RefreshCameras;
-    }
+	private void Awake()
+	{
+		Instance = this;
+	}
 
-    public void RefreshCameras()
-    {
-        cameraList.Clear();
+	private void OnEnable()
+	{
+		StickyCameraProp.RegistryChanged += RefreshCameras;
 
-        int teamId = ResolveTeamId();
+		cachedTeamId = int.MinValue;
+		nextRetryTime = 0f;
 
-        if (teamId < 0)
-            return;
+		RefreshCameras();
+	}
 
-        StickyCameraProp[] cameras =
-            FindObjectsOfType<StickyCameraProp>();
+	private void OnDisable()
+	{
+		StickyCameraProp.RegistryChanged -= RefreshCameras;
+	}
 
-        for (int i = 0; i < cameras.Length; i++)
-        {
-            StickyCameraProp camera =
-                cameras[i];
+	private void Update()
+	{
+		int currentTeamId = ResolveTeamId();
 
-            if (camera == null ||
-                camera.NetworkObject == null)
-            {
-                continue;
-            }
+		// Remote clients may receive their team ID after this component
+		// and the camera props have already started.
+		if (currentTeamId != cachedTeamId)
+		{
+			RefreshCameras();
+			return;
+		}
 
-            if (camera.TeamId == teamId)
-                cameraList.Add(camera);
-        }
-    }
+		// Retry if the original registry notification happened before
+		// the client's team data was ready.
+		if (currentTeamId >= 0 &&
+			cameraList.Count == 0 &&
+			Time.unscaledTime >= nextRetryTime)
+		{
+			RefreshCameras();
+		}
+	}
 
-    public List<StickyCameraProp> GetCameras()
-    {
-        for (int i = cameraList.Count - 1; i >= 0; i--)
-        {
-            if (cameraList[i] == null)
-                cameraList.RemoveAt(i);
-        }
+	public void RefreshCameras()
+	{
+		cameraList.Clear();
 
-        return cameraList;
-    }
+		cachedTeamId = ResolveTeamId();
+		nextRetryTime =
+			Time.unscaledTime + emptyListRetryInterval;
 
-    private int ResolveTeamId()
-    {
-        return MyClient.Instance.TeamId;
-    }
+		if (cachedTeamId < 0)
+			return;
+
+		StickyCameraProp[] cameras =
+			FindObjectsOfType<StickyCameraProp>();
+
+		for (int i = 0; i < cameras.Length; i++)
+		{
+			StickyCameraProp camera = cameras[i];
+
+			if (camera == null ||
+				camera.NetworkObject == null ||
+				!camera.IsClientStarted)
+			{
+				continue;
+			}
+
+			if (camera.TeamId == cachedTeamId)
+				cameraList.Add(camera);
+		}
+	}
+
+	public List<StickyCameraProp> GetCameras()
+	{
+		RemoveDestroyedCameras();
+
+		int currentTeamId = ResolveTeamId();
+
+		if (currentTeamId != cachedTeamId ||
+			(currentTeamId >= 0 &&
+			 cameraList.Count == 0 &&
+			 Time.unscaledTime >= nextRetryTime))
+		{
+			RefreshCameras();
+		}
+
+		return cameraList;
+	}
+
+	private void RemoveDestroyedCameras()
+	{
+		for (int i = cameraList.Count - 1; i >= 0; i--)
+		{
+			if (cameraList[i] == null)
+				cameraList.RemoveAt(i);
+		}
+	}
+
+	private int ResolveTeamId()
+	{
+		if (MyClient.Instance == null)
+			return -1;
+
+		return MyClient.Instance.TeamId;
+	}
+
+	private void OnDestroy()
+	{
+		if (Instance == this)
+			Instance = null;
+	}
 }

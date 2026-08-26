@@ -593,7 +593,7 @@ public sealed class GunItem : HotbarHeldItem
 
 
 		Vector3 inverseSurfaceNormal =
-			-hit.normal.normalized;
+			hit.normal.normalized;
 
 		Vector3 travelDirection =
 			bulletDirection.normalized;

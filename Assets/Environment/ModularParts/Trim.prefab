@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4745123980906305970}
   - component: {fileID: 1290521547468971400}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Trim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,6 +58,10 @@ PrefabInstance:
     - target: {fileID: 109362, guid: 077ba62a63e089b4aacbb648422a1dfd, type: 3}
       propertyPath: m_Name
       value: SM_Env_Roof_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 109362, guid: 077ba62a63e089b4aacbb648422a1dfd, type: 3}
+      propertyPath: m_Layer
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 447988, guid: 077ba62a63e089b4aacbb648422a1dfd, type: 3}
       propertyPath: m_LocalScale.x

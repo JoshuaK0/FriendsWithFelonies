@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lookupName: tightrope
   displayName: Tightrope
-  maxStack: 5
+  maxStack: 10
   consumeOnEmpty: 1
   isDroppable: 1
   isPurchasable: 1

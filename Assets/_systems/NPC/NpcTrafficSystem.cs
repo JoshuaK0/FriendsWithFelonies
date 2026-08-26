@@ -47,10 +47,15 @@ public sealed class NpcTrafficSystem : NetworkBehaviour
     {
         base.OnStartServer();
 
-        spawnRoutine = StartCoroutine(SpawnRoutine());
+        GameFlowManager.Instance.OnRoundStarted += StartSpawnRoutine;
     }
 
-    public override void OnStopServer()
+    void StartSpawnRoutine(int round)
+    {
+		spawnRoutine = StartCoroutine(SpawnRoutine());
+	}
+
+	public override void OnStopServer()
     {
         if (spawnRoutine != null)
         {

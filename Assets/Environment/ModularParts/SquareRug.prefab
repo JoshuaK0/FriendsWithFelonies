@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3147289788593225289}
   - component: {fileID: 5489268746091791033}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: SquareRug
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,6 +59,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SM_Prop_Rug_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 6239381895660931885, guid: d61c2d26ccae98547ad92162a48d1e5c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 6763681419487072663, guid: d61c2d26ccae98547ad92162a48d1e5c,
         type: 3}

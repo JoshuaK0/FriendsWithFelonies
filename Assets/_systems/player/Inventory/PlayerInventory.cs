@@ -4,11 +4,30 @@ using UnityEngine;
 [DefaultExecutionOrder(-1000)]
 public sealed class PlayerInventory : MonoBehaviour
 {
+	[Serializable]
+	private sealed class StartingInventorySlot
+	{
+		[SerializeField] private ItemDefinition item;
+		[SerializeField, Min(1)] private int count = 1;
+
+		public ItemDefinition Item => item;
+		public int Count => Mathf.Max(1, count);
+	}
+
 	public static PlayerInventory Instance { get; private set; }
 	public static event Action<PlayerInventory> InstanceChanged;
 
 	[Header("Inventory")]
 	[SerializeField, Min(1)] private int slotCount = 3;
+
+	[Header("Starting Inventory")]
+	[Tooltip("Registry used to convert starting Item Definitions into inventory item IDs.")]
+	[SerializeField] private ItemRegistry registry;
+
+	[Tooltip(
+		"Starting hotbar contents. Element 0 fills slot 0, element 1 fills " +
+		"slot 1, and so on. Leave an element's Item empty for an empty slot.")]
+	[SerializeField] private StartingInventorySlot[] startingSlots;
 
 	private HotbarSlot[] slots;
 
@@ -57,6 +76,61 @@ public sealed class PlayerInventory : MonoBehaviour
 
 		for (int i = 0; i < slots.Length; i++)
 			slots[i] = new HotbarSlot();
+
+		ApplyStartingInventory();
+	}
+
+	private void ApplyStartingInventory()
+	{
+		if (startingSlots == null || startingSlots.Length == 0)
+			return;
+
+		if (registry == null)
+		{
+			Debug.LogWarning(
+				"PlayerInventory: Starting inventory could not be applied " +
+				"because no Item Registry is assigned.",
+				this);
+			return;
+		}
+
+		int entriesToApply = Mathf.Min(slots.Length, startingSlots.Length);
+
+		for (int i = 0; i < entriesToApply; i++)
+		{
+			StartingInventorySlot startingSlot = startingSlots[i];
+
+			if (startingSlot == null || startingSlot.Item == null)
+				continue;
+
+			int itemId = registry.GetItemId(startingSlot.Item);
+
+			if (!registry.IsValidItemId(itemId))
+			{
+				Debug.LogWarning(
+					$"PlayerInventory: Starting item " +
+					$"'{startingSlot.Item.name}' in slot {i} is not in " +
+					"the assigned Item Registry.",
+					this);
+				continue;
+			}
+
+			int maxStack = registry.MaxStackOf(itemId);
+			int count = Mathf.Clamp(startingSlot.Count, 1, maxStack);
+
+			if (startingSlot.Count > maxStack)
+			{
+				Debug.LogWarning(
+					$"PlayerInventory: Starting count for " +
+					$"'{registry.NameOf(itemId)}' in slot {i} was " +
+					$"clamped from {startingSlot.Count} to its max stack " +
+					$"size of {maxStack}.",
+					this);
+			}
+
+			slots[i].itemId = itemId;
+			slots[i].count = count;
+		}
 	}
 
 	public bool IsValidSlot(int index)

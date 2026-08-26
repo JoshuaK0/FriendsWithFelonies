@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public sealed class TripWireItem : HotbarHeldItem
 {
-    [SerializeField] private Transform rayOrigin;
+    private Transform rayOrigin;
     [SerializeField] private PlacementPreview preview;
     [SerializeField, Min(0f)] private float range = 5f;
     [SerializeField] private float surfaceOffset = 0.02f;
@@ -15,7 +15,15 @@ public sealed class TripWireItem : HotbarHeldItem
 
     private TripWireItemNetworked networkedCounterpart;
 
-    protected override void OnContextInitialized()
+	void Start()
+	{
+		rayOrigin = MyClient.Instance.PlayerManager
+		.LocalPlayerController
+		.GetComponent<CharControllerServiceLocator>()
+		.muzzle;
+	}
+
+	protected override void OnContextInitialized()
     {
         networkedCounterpart = ItemServices != null ? ItemServices.GetNetworkedTripWire() : null;
     }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lookupName: smokeBomb
   displayName: Smokebomb
-  maxStack: 1
+  maxStack: 10
   consumeOnEmpty: 1
   isDroppable: 1
   isPurchasable: 1

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4116001302504192156}
   - component: {fileID: 5398780288087220837}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: RoundPillarFluted
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,6 +59,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Pillar 04 Thick 1h
+      objectReference: {fileID: 0}
+    - target: {fileID: 2386223604311969674, guid: 92a3bc6e301ad2995909302e6530894b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 8109352761139222362, guid: 92a3bc6e301ad2995909302e6530894b,
         type: 3}

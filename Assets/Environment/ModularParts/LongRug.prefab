@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9151882918503668764}
   - component: {fileID: 1948791162563127408}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: LongRug
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,6 +59,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SM_Prop_Rug_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 93553284463643280, guid: 106ceced823ff0d4da7f39490fa1a1df,
+        type: 3}
+      propertyPath: m_Layer
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 722703065525162026, guid: 106ceced823ff0d4da7f39490fa1a1df,
         type: 3}

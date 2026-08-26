@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7966441378441590757}
   - component: {fileID: 6114119943033911939}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: SingleDoorOpening
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ GameObject:
   - component: {fileID: 1630733100922942842}
   - component: {fileID: 7508639959326296575}
   - component: {fileID: 3166428232517900754}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 103322812984193849}
   - component: {fileID: 842432117441937928}
   - component: {fileID: 6524394857923734237}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -280,7 +280,7 @@ GameObject:
   - component: {fileID: 3763288936567801633}
   - component: {fileID: 4549872237968404152}
   - component: {fileID: 5682610871452751759}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -403,6 +403,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SM_Bld_Wall_Door_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1416393648000463388, guid: 35a5028a2b9c66d479c645659409f996,
+        type: 3}
+      propertyPath: m_Layer
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 1793516942521247910, guid: 35a5028a2b9c66d479c645659409f996,
         type: 3}
@@ -9475,6 +9480,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SM_Bld_Wall_Door_01 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1416393648000463388, guid: 35a5028a2b9c66d479c645659409f996,
+        type: 3}
+      propertyPath: m_Layer
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 1793516942521247910, guid: 35a5028a2b9c66d479c645659409f996,
         type: 3}
@@ -18582,11 +18592,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Door
-      objectReference: {fileID: 0}
-    - target: {fileID: 6304959150383089313, guid: dc8c12d096793ea4a8055f7c2e64df60,
-        type: 3}
-      propertyPath: SerializedTransformProperties.Position.x
-      value: 1.6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

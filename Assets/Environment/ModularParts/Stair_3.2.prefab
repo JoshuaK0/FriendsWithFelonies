@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1223147344331572231}
   - component: {fileID: 3217500384376740282}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Stair_3.2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,7 +61,7 @@ GameObject:
   - component: {fileID: 324576674024198585}
   - component: {fileID: 8011268479202383392}
   - component: {fileID: 8263795525197835018}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Stairs
   m_TagString: Untagged
   m_Icon: {fileID: 0}

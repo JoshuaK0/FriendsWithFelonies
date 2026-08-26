@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 572598108387804661}
   - component: {fileID: 4264308550260891577}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: IndoorTrim1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,6 +119,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SM_Bld_Trim_Large_Single_01 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7511184302554440411, guid: 6be59f8cbc5e64741a03b4b259d9b331,
+        type: 3}
+      propertyPath: m_Layer
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 8304050728055390990, guid: 6be59f8cbc5e64741a03b4b259d9b331,
         type: 3}

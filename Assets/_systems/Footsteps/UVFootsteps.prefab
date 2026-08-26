@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a59beedb1b9c644dafe26a7557decf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifetime: 15
+  lifetime: 60
   objectRenderer: {fileID: 1946953303025622816}
 --- !u!1 &8145405861444400769
 GameObject:
@@ -200,7 +200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a59beedb1b9c644dafe26a7557decf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifetime: 15
+  lifetime: 60
   objectRenderer: {fileID: 4893425927822636557}
 --- !u!1 &8716065773528458652
 GameObject:

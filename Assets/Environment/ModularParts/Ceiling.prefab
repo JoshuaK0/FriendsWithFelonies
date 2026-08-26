@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4786894287013249689}
   - component: {fileID: 3805345630359603787}
   - component: {fileID: 4666576995919630534}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   m_Component:
   - component: {fileID: 209131607711935381}
   - component: {fileID: -1735512550040391163}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Ceiling
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 1684403160379217039}
   - component: {fileID: 4035826904808290140}
   - component: {fileID: 8820061477720805953}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

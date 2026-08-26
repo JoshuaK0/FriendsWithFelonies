@@ -1,5 +1,6 @@
 // PlayerMovement version: sprint gate delay + smoothing + stance clearance + crouch-to-run + air control
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
@@ -27,7 +28,12 @@ public class PlayerMovement : MonoBehaviour
 	[Header("Sprint")]
 	[SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
 	[SerializeField] private bool toggleSprint;
-	[SerializeField] private float minimumSprintForwardVelocity = 1f;
+
+	[FormerlySerializedAs("minimumSprintForwardVelocity")]
+	[SerializeField, Min(0f)] private float minimumSprintVelocity = 1f;
+
+	[Tooltip("Maximum angle between the player's horizontal velocity and forward direction that still counts toward the sprint speed gate. 45 degrees allows normal diagonal sprinting.")]
+	[SerializeField, Range(0f, 90f)] private float maximumSprintVelocityAngle = 60f;
 
 	[Tooltip("How long the player must remain below the sprint speed gate before sprint is cancelled.")]
 	[SerializeField, Min(0f)] private float sprintLowSpeedExitDelay = 0.25f;
@@ -135,10 +141,10 @@ public class PlayerMovement : MonoBehaviour
 	private bool sprintBlockedUntilRelease;
 
 	/*
-	 * Used to determine whether forward velocity
+	 * Used to determine whether horizontal speed
 	 * is currently decreasing.
 	 */
-	private float previousForwardVelocity;
+	private float previousHorizontalSpeed;
 
 	/*
 	 * Time continuously spent below the sprint speed gate after
@@ -598,10 +604,24 @@ public class PlayerMovement : MonoBehaviour
 
 		actualHorizontalVelocity.y = 0f;
 
-		float forwardVelocity =
-			Vector3.Dot(
-				actualHorizontalVelocity,
-				transform.forward);
+		float horizontalSpeed =
+			actualHorizontalVelocity.magnitude;
+
+		/*
+		 * Use total horizontal speed for the low-speed gate so
+		 * diagonal movement does not lose its sideways component.
+		 *
+		 * The angle check prevents sideways or backwards velocity
+		 * from being treated as valid sprint velocity. At almost
+		 * zero speed there is no meaningful direction, so only the
+		 * low-speed check is used.
+		 */
+		bool isVelocityWithinSprintAngle =
+			horizontalSpeed <= 0.01f ||
+			Vector3.Angle(
+				transform.forward,
+				actualHorizontalVelocity) <=
+			maximumSprintVelocityAngle;
 
 		/*
 		 * isSprinting still contains last frame's state here.
@@ -613,12 +633,13 @@ public class PlayerMovement : MonoBehaviour
 			isSprinting;
 
 		bool isDecelerating =
-			forwardVelocity <
-			previousForwardVelocity - 0.01f;
+			horizontalSpeed <
+			previousHorizontalSpeed - 0.01f;
 
 		bool belowSprintSpeedGate =
-			forwardVelocity <
-			minimumSprintForwardVelocity;
+			!isVelocityWithinSprintAngle ||
+			horizontalSpeed <
+			minimumSprintVelocity;
 
 		/*
 		 * SPRINT LOW-SPEED EXIT DELAY
@@ -626,8 +647,9 @@ public class PlayerMovement : MonoBehaviour
 		 * The countdown may only START when:
 		 *  - the player was already sprinting,
 		 *  - sprint is still requested,
-		 *  - forward speed is below the gate, and
-		 *  - forward speed is actively decreasing.
+		 *  - horizontal speed is below the gate or its direction is
+		 *    outside the permitted forward angle, and
+		 *  - speed is decreasing, unless its direction is invalid.
 		 *
 		 * Once started, the player must remain below the speed gate
 		 * continuously for sprintLowSpeedExitDelay seconds. Returning
@@ -643,7 +665,8 @@ public class PlayerMovement : MonoBehaviour
 		else
 		{
 			if (!sprintLowSpeedTimerActive &&
-				isDecelerating)
+				(isDecelerating ||
+				 !isVelocityWithinSprintAngle))
 			{
 				sprintLowSpeedTimerActive = true;
 				sprintLowSpeedTimer = 0f;
@@ -805,11 +828,11 @@ public class PlayerMovement : MonoBehaviour
 				Time.deltaTime);
 
 		/*
-		 * Save the actual forward velocity for next frame's
+		 * Save the actual horizontal speed for next frame's
 		 * sprint deceleration comparison.
 		 */
-		previousForwardVelocity =
-			forwardVelocity;
+		previousHorizontalSpeed =
+			horizontalSpeed;
 	}
 
 	// --------------------------------------------------
@@ -930,7 +953,7 @@ public class PlayerMovement : MonoBehaviour
 		 * stale pre-ladder velocity to be interpreted
 		 * as sprint deceleration.
 		 */
-		previousForwardVelocity = 0f;
+		previousHorizontalSpeed = 0f;
 
 		/*
 		 * If standing space is available, use the
@@ -1259,7 +1282,7 @@ public class PlayerMovement : MonoBehaviour
 		verticalVelocity.y =
 			groundedForce;
 
-		previousForwardVelocity = 0f;
+		previousHorizontalSpeed = 0f;
 
 		/*
 		 * If we've already physically left the trigger,
@@ -1424,7 +1447,7 @@ public class PlayerMovement : MonoBehaviour
 				jumpVelocity,
 				Vector3.up);
 
-		previousForwardVelocity = 0f;
+		previousHorizontalSpeed = 0f;
 	}
 
 	// --------------------------------------------------
@@ -1489,7 +1512,7 @@ public class PlayerMovement : MonoBehaviour
 		verticalVelocity =
 			Vector3.zero;
 
-		previousForwardVelocity = 0f;
+		previousHorizontalSpeed = 0f;
 
 		Vector3 displacement =
 			exitPosition -

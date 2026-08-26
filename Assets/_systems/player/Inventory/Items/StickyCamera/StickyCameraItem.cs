@@ -4,7 +4,7 @@ using UnityEngine;
 public sealed class StickyCameraItem : HotbarHeldItem
 {
     [Header("Placement")]
-    [SerializeField] private Transform rayOrigin;
+    private Transform rayOrigin;
     [SerializeField] private PlacementPreview preview;
     [SerializeField, Min(0f)] private float range = 5f;
     [SerializeField] private float surfaceOffset = 0.02f;
@@ -32,6 +32,14 @@ public sealed class StickyCameraItem : HotbarHeldItem
 
     private StickyCameraItemNetworked networkedCounterpart;
 
+    void Start()
+    {
+		rayOrigin = MyClient.Instance.PlayerManager
+		.LocalPlayerController
+		.GetComponent<CharControllerServiceLocator>()
+		.muzzle;
+	}
+
     protected override void OnContextInitialized()
     {
         networkedCounterpart =
@@ -39,12 +47,6 @@ public sealed class StickyCameraItem : HotbarHeldItem
                 ? ItemServices.GetNetworkedStickyCamera()
                 : null;
 
-        if (StickyCameraManager.Instance == null &&
-            Inventory != null)
-        {
-            StickyCameraManager.Instance =
-                Inventory.GetComponentInParent<StickyCameraManager>();
-        }
 
         if (manualUpdate == null && surveyCamera != null)
         {

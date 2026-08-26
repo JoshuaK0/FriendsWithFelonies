@@ -4,7 +4,7 @@ public sealed class LootItem : HotbarHeldItem
 {
 	[Header("Throwing")]
 	[SerializeField] private GameObject viewmodel;
-	[SerializeField] private Transform muzzle;
+	private Transform muzzle;
 	[SerializeField] private Vector3 throwOffset;
 
 	[SerializeField, Min(0f)]
@@ -15,6 +15,13 @@ public sealed class LootItem : HotbarHeldItem
 
 	private LootItemNetworked networkedCounterpart;
 
+	void Start()
+	{
+		muzzle = MyClient.Instance.PlayerManager
+		.LocalPlayerController
+		.GetComponent<CharControllerServiceLocator>()
+		.muzzle;
+	}
 	protected override void OnContextInitialized()
 	{
 		networkedCounterpart = ItemServices != null

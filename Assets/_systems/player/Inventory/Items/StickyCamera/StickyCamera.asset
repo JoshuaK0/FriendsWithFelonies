@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lookupName: stickyCamera
   displayName: Stickycamera
-  maxStack: 5
+  maxStack: 10
   consumeOnEmpty: 0
   isDroppable: 1
   isPurchasable: 1

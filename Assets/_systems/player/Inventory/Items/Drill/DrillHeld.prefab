@@ -203,7 +203,7 @@ MonoBehaviour:
   wallOffset: 0.1
   hitLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 262144
 --- !u!1 &8508895102201723030
 GameObject:
   m_ObjectHideFlags: 0

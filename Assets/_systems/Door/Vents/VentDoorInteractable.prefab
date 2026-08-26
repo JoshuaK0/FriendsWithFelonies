@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6892121165702969340}
   - component: {fileID: 3216441378508231058}
   - component: {fileID: 2041088468281373060}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 3764566528591172398}
   - component: {fileID: 5475911985348064186}
   - component: {fileID: 7271895713495744719}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -276,8 +276,8 @@ MonoBehaviour:
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField: []
   SerializedTransformProperties:
-    Position: {x: 0, y: 5, z: 5.25}
-    Rotation: {x: -0, y: -0.70710665, z: -0, w: 0.70710695}
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
     LocalScale: {x: 1, y: 1, z: 1}
   _isNetworked: 1
   _isSpawnable: 0
@@ -395,7 +395,7 @@ GameObject:
   - component: {fileID: 4070830334162248279}
   - component: {fileID: 3674939267472865545}
   - component: {fileID: 4835665344544677036}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -479,7 +479,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4630498792945671427}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: OpenDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -511,7 +511,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5842981324031892905}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -542,7 +542,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7831540758159697374}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: CloseDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

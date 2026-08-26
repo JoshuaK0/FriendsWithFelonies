@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3751631428292858480}
   - component: {fileID: 645878962788003609}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Vent-Opening
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63,7 +63,7 @@ GameObject:
   - component: {fileID: 5976887750222140997}
   - component: {fileID: 6032886670875617854}
   - component: {fileID: 7554387291409190294}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 4057932467213464805}
   - component: {fileID: 631735596701409294}
   - component: {fileID: 2618367360419260430}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -279,7 +279,7 @@ GameObject:
   - component: {fileID: 1332027140175520920}
   - component: {fileID: 2393770901374385378}
   - component: {fileID: 5397394070958422831}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -387,7 +387,7 @@ GameObject:
   - component: {fileID: 3228699348623464543}
   - component: {fileID: 8781513546367365480}
   - component: {fileID: 1779252359087169982}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -491,16 +491,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3751631428292858480}
     m_Modifications:
-    - target: {fileID: 3793615645912901450, guid: c77d91eb0459bb94c84603660348a659,
-        type: 3}
-      propertyPath: <IsNested>k__BackingField
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3793615645912901450, guid: c77d91eb0459bb94c84603660348a659,
-        type: 3}
-      propertyPath: <ComponentIndex>k__BackingField
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5445640255526873155, guid: c77d91eb0459bb94c84603660348a659,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -591,7 +591,19 @@ MonoBehaviour:
   selectedCG: {fileID: 0}
   onClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1062326963}
+        m_TargetAssemblyTypeName: ShopWindowToggle, Assembly-CSharp
+        m_MethodName: CloseShop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onPointerDown:
     m_PersistentCalls:
       m_Calls: []
@@ -620,7 +632,7 @@ MonoBehaviour:
   styleFoldout: 0
   navigationFoldout: 0
   referencesFoldout: 0
-  eventsFoldout: 0
+  eventsFoldout: 1
   enableIcon: 1
   icon: {fileID: 21300000, guid: f8fe00a6df49c0b4784be7db94e72972, type: 3}
   iconSize: 22
@@ -3592,8 +3604,8 @@ MonoBehaviour:
   slideOffset: {x: 0, y: -50}
   useUnscaledTime: 1
   customContent: 0
-  closeOnConfirm: 1
-  closeOnCancel: 1
+  closeOnConfirm: 0
+  closeOnCancel: 0
   startBehavior: 1
   closeBehavior: 0
   navigationMode: 1
@@ -3617,7 +3629,7 @@ MonoBehaviour:
       m_Calls: []
   objectFoldout: 1
   settingsFoldout: 1
-  referencesFoldout: 0
+  referencesFoldout: 1
   eventsFoldout: 0
 --- !u!1 &1547664697
 GameObject:
@@ -4576,6 +4588,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotCount: 10
+  registry: {fileID: 11400000, guid: 70252e3e247a8444c99b9b9f44d8afa8, type: 2}
+  startingSlots:
+  - item: {fileID: 11400000, guid: 52eb1f21801d51b4284cf16994634046, type: 2}
+    count: 1
+  - item: {fileID: 11400000, guid: e0b94da8372091b44842ba3fa8face60, type: 2}
+    count: 1
 --- !u!4 &1730932627
 Transform:
   m_ObjectHideFlags: 0

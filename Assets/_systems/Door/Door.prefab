@@ -344,9 +344,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4273427829908534550}
-  - component: {fileID: 2729641847851173803}
   - component: {fileID: 2894998682740426272}
   - component: {fileID: 407758907078816017}
+  - component: {fileID: 5979843899671972211}
   m_Layer: 0
   m_Name: AlarmIndicator
   m_TagString: Untagged
@@ -370,29 +370,6 @@ Transform:
   - {fileID: 6613143704990572281}
   m_Father: {fileID: 949967112472439430}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2729641847851173803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2821387901753733562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0b13b87988a45247a052e7af084c0e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 6304959150383089313}
-  _networkObjectCache: {fileID: 6304959150383089313}
-  source: {fileID: 407758907078816017}
-  alarmLight: {fileID: 7129001662760292098}
-  alarmDuration: 5
-  flashingLightIntensity: {x: 5, y: 10}
-  flashingLightSmoothing: 5
-  flashingLightInterval: 0.1
-  indicatorUI: {fileID: 2894998682740426272}
-  requireOwnershipForUIIndicator: 0
 --- !u!114 &2894998682740426272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,8 +383,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _componentIndexCache: 1
-  _addedNetworkObject: {fileID: 6304959150383089313}
-  _networkObjectCache: {fileID: 6304959150383089313}
+  _addedNetworkObject: {fileID: 5826652668804030450}
+  _networkObjectCache: {fileID: 5826652668804030450}
   indicatorTransform: {fileID: 6613143704990572281}
   onScreenIndicator: {fileID: 3181588421586066741}
   offscreenIndicator: {fileID: 5210421533316566825}
@@ -510,6 +487,29 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5979843899671972211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2821387901753733562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0b13b87988a45247a052e7af084c0e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 5826652668804030450}
+  _networkObjectCache: {fileID: 0}
+  source: {fileID: 407758907078816017}
+  alarmLight: {fileID: 7129001662760292098}
+  alarmDuration: 5
+  flashingLightIntensity: {x: 0, y: 10}
+  flashingLightSmoothing: 1
+  flashingLightInterval: 0.2
+  indicatorUI: {fileID: 2894998682740426272}
+  requireOwnershipForUIIndicator: 0
 --- !u!1 &3181588421586066741
 GameObject:
   m_ObjectHideFlags: 0
@@ -661,8 +661,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6727745433672328735}
-  - component: {fileID: 2945781086190220311}
   - component: {fileID: 3210953577010069396}
+  - component: {fileID: 702491140039916388}
   m_Layer: 6
   m_Name: DoorInteractable
   m_TagString: Untagged
@@ -686,31 +686,6 @@ Transform:
   - {fileID: 770975662056201482}
   m_Father: {fileID: 1725801784543236101}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2945781086190220311
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5579834941513742878}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b99f07affa0e7e42a32e92c85a3cbb9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 2
-  _addedNetworkObject: {fileID: 6304959150383089313}
-  _networkObjectCache: {fileID: 6304959150383089313}
-  iconAnchor: {fileID: 770975662056201482}
-  direction: 0
-  doorVisual: {fileID: 1725801784543236101}
-  doorCollider: {fileID: 2240830589742874683}
-  speed: 5
-  holdToAutoCloseTime: 0.5
-  autoCloseMaxDist: 3
-  alarmIndicator: {fileID: 2729641847851173803}
-  isDoorAlarmed: 0
-  alarmDelay: 3
 --- !u!135 &3210953577010069396
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -732,6 +707,31 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.25
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &702491140039916388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5579834941513742878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b99f07affa0e7e42a32e92c85a3cbb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 2
+  _addedNetworkObject: {fileID: 5826652668804030450}
+  _networkObjectCache: {fileID: 5826652668804030450}
+  iconAnchor: {fileID: 770975662056201482}
+  direction: 0
+  doorVisual: {fileID: 5046446067073283369}
+  doorCollider: {fileID: 2240830589742874683}
+  speed: 5
+  holdToAutoCloseTime: 0.5
+  autoCloseMaxDist: 3
+  alarmIndicator: {fileID: 0}
+  isDoorAlarmed: 0
+  alarmDelay: 0
 --- !u!1 &5694654881904360639
 GameObject:
   m_ObjectHideFlags: 0
@@ -869,7 +869,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 949967112472439430}
-  - component: {fileID: 6304959150383089313}
+  - component: {fileID: 5826652668804030450}
+  - component: {fileID: 1910483893277329252}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -895,7 +896,7 @@ Transform:
   - {fileID: 2665045579945530913}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6304959150383089313
+--- !u!114 &5826652668804030450
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -911,9 +912,9 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
-  - {fileID: 2729641847851173803}
+  - {fileID: 1910483893277329252}
   - {fileID: 2894998682740426272}
-  - {fileID: 2945781086190220311}
+  - {fileID: 702491140039916388}
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField: []
   SerializedTransformProperties:
@@ -921,7 +922,7 @@ MonoBehaviour:
     Rotation: {x: 0, y: 0, z: 0, w: 1}
     LocalScale: {x: 1, y: 1, z: 1}
   _isNetworked: 1
-  _isSpawnable: 1
+  _isSpawnable: 0
   _isGlobal: 0
   _initializeOrder: 0
   _defaultDespawnType: 0
@@ -943,6 +944,21 @@ MonoBehaviour:
   <SpawnableCollectionId>k__BackingField: 0
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 16943770815430290784
+--- !u!114 &1910483893277329252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6109024204309273906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a6a39c46bf52104ba8efe3100bce3f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 5826652668804030450}
+  _networkObjectCache: {fileID: 5826652668804030450}
 --- !u!1 &7727770132737148839
 GameObject:
   m_ObjectHideFlags: 0
@@ -985,7 +1001,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 770975662056201482}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1018,6 +1034,10 @@ PrefabInstance:
     - target: {fileID: 1777774928286938, guid: 18bffc42d949c554792684e37bfe7448, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Sign_Caution_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1777774928286938, guid: 18bffc42d949c554792684e37bfe7448, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4951446756552944, guid: 18bffc42d949c554792684e37bfe7448, type: 3}
       propertyPath: m_LocalScale.x
@@ -1101,6 +1121,10 @@ PrefabInstance:
       value: SM_Env_Door_03
       objectReference: {fileID: 0}
     - target: {fileID: 143170, guid: 27b2bb42c14d1c9428d3fd44cc99028a, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 143170, guid: 27b2bb42c14d1c9428d3fd44cc99028a, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -1175,6 +1199,10 @@ PrefabInstance:
     - target: {fileID: 1669101628050676, guid: ed83dc50c9c08e94daa6df4b3a685dc1, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Sign_KeepOut_01 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1669101628050676, guid: ed83dc50c9c08e94daa6df4b3a685dc1, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4816814288856890, guid: ed83dc50c9c08e94daa6df4b3a685dc1, type: 3}
       propertyPath: m_LocalScale.x
@@ -1258,6 +1286,10 @@ PrefabInstance:
       value: RedDoor
       objectReference: {fileID: 0}
     - target: {fileID: 143170, guid: 27b2bb42c14d1c9428d3fd44cc99028a, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 143170, guid: 27b2bb42c14d1c9428d3fd44cc99028a, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -1332,6 +1364,10 @@ PrefabInstance:
     - target: {fileID: 1669101628050676, guid: ed83dc50c9c08e94daa6df4b3a685dc1, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Sign_KeepOut_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1669101628050676, guid: ed83dc50c9c08e94daa6df4b3a685dc1, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4816814288856890, guid: ed83dc50c9c08e94daa6df4b3a685dc1, type: 3}
       propertyPath: m_LocalScale.x
@@ -1413,6 +1449,10 @@ PrefabInstance:
     - target: {fileID: 1777774928286938, guid: 18bffc42d949c554792684e37bfe7448, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Sign_Caution_01 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1777774928286938, guid: 18bffc42d949c554792684e37bfe7448, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4951446756552944, guid: 18bffc42d949c554792684e37bfe7448, type: 3}
       propertyPath: m_LocalScale.x

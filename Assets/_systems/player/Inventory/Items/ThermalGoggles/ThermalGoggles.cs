@@ -1,27 +1,23 @@
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 /// <summary>
-/// Provides input and configuration for the persistent
-/// night-vision runtime controller.
+/// Owner-local thermal vision input and configuration.
+///
+/// The persistent runtime controller is attached to the inventory, so thermal
+/// vision and its battery continue to work when the held prefab is rebuilt.
+/// Renderer features are local to the running client and do not require
+/// FishNet replication.
 /// </summary>
-public sealed class NightVisionGoggles : HotbarHeldItem
+public sealed class ThermalGoggles : HotbarHeldItem
 {
-	[Header("Night Vision")]
+	[Header("Thermal Vision")]
 	[SerializeField]
-	private Color nightVisionAmbientLight =
-		Color.green;
+	private UniversalRendererData rendererData;
 
 	[SerializeField]
-	private AmbientMode nightVisionAmbientMode =
-		AmbientMode.Flat;
-
-	[SerializeField, Min(0f)]
-	private float nightVisionLerpDuration = 0.5f;
-
-	[SerializeField, Range(0f, 1f)]
-	private float nightVisionReflectionIntensity;
+	private string featureName = "Outline1";
 
 	[Header("Audio")]
 	[SerializeField]
@@ -37,8 +33,7 @@ public sealed class NightVisionGoggles : HotbarHeldItem
 	[SerializeField, Min(0f)]
 	private float consumeRate = 1f;
 
-	private NightVisionRuntimeController runtimeController;
-
+	private ThermalVisionRuntimeController runtimeController;
 	private GameObject screenFx;
 	private Slider slider;
 
@@ -54,19 +49,24 @@ public sealed class NightVisionGoggles : HotbarHeldItem
 
 		runtimeController =
 			Inventory.GetComponent
-				<NightVisionRuntimeController>();
+				<ThermalVisionRuntimeController>();
+
+		if (runtimeController == null)
+		{
+			runtimeController =
+				Inventory.gameObject.AddComponent
+					<ThermalVisionRuntimeController>();
+		}
 
 		ResolvePlayerOutputs();
 
 		runtimeController.Configure(
 			ItemId,
 			RuntimeState,
+			rendererData,
+			featureName,
 			duration,
 			consumeRate,
-			nightVisionAmbientLight,
-			nightVisionAmbientMode,
-			nightVisionLerpDuration,
-			nightVisionReflectionIntensity,
 			screenFx,
 			slider
 		);
@@ -76,10 +76,7 @@ public sealed class NightVisionGoggles : HotbarHeldItem
 	{
 		ResolvePlayerOutputs();
 
-		/*
-		 * Equipping does not change whether night
-		 * vision is currently on.
-		 */
+		// Equipping does not change the current thermal-vision state.
 		runtimeController?.SetOutputReferences(
 			screenFx,
 			slider
@@ -109,10 +106,7 @@ public sealed class NightVisionGoggles : HotbarHeldItem
 
 	protected override void OnUnequipped()
 	{
-		/*
-		 * Do not turn off night vision or hide the
-		 * slider when unequipping.
-		 */
+		// Keep thermal vision and its HUD output active after unequipping.
 		runtimeController?.SaveState();
 	}
 
@@ -135,10 +129,10 @@ public sealed class NightVisionGoggles : HotbarHeldItem
 			return false;
 
 		slider =
-			playerCharacter.GetNVGSlider();
+			playerCharacter.GetThermalSlider();
 
 		screenFx =
-			playerCharacter.GetNVGFX();
+			playerCharacter.GetThermalFX();
 
 		runtimeController?.SetOutputReferences(
 			screenFx,

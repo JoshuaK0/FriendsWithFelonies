@@ -185,7 +185,7 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 0}
   _networkObjectCache: {fileID: 0}
-  indicatorTransform: {fileID: 5689275043729675264}
+  indicatorTransform: {fileID: 8752147639771091637}
   onScreenIndicator: {fileID: 9131018296647533718}
   offscreenIndicator: {fileID: 6113326638613715067}
   outOfSightOffset: 20

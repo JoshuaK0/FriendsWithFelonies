@@ -6,7 +6,7 @@ public sealed class StickyBombItem : HotbarHeldItem
 {
     [Header("Throwing")]
     [SerializeField] private GameObject viewmodel;
-    [SerializeField] private Transform muzzle;
+    private Transform muzzle;
     [SerializeField] private Vector3 throwOffset;
 
     [Header("Detonation")]
@@ -28,7 +28,14 @@ public sealed class StickyBombItem : HotbarHeldItem
     private StickyBombItemNetworked networkedCounterpart;
     private bool waitingForFinalThrownBomb;
 
-    private int CurrentCount
+	void Start()
+	{
+		muzzle = MyClient.Instance.PlayerManager
+		.LocalPlayerController
+		.GetComponent<CharControllerServiceLocator>()
+		.muzzle;
+	}
+	private int CurrentCount
     {
         get
         {

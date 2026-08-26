@@ -88,7 +88,7 @@ public class ShopWindowToggle : MonoBehaviour
 		OnShopOpened?.Invoke();
 	}
 
-	private void CloseShop()
+	public void CloseShop()
 	{
 		shopWindow.Close();
 

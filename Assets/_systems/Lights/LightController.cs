@@ -82,6 +82,7 @@ public sealed class LightController : NetworkBehaviour, ILightFlickerable
 		maxIntensity = 1f;
 		targetMaxIntensity = 1f;
 		stableState = startOn ? LightStableState.On : LightStableState.Off;
+
 	}
 
 	private void Update()

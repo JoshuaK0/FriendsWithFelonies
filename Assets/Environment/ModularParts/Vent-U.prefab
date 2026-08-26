@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8011325193675391112}
   - component: {fileID: 4990887635620300155}
   - component: {fileID: 1957461315435750367}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 4412350295336561452}
   - component: {fileID: 8705158060591878930}
   - component: {fileID: 4099616147913504337}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -228,7 +228,7 @@ GameObject:
   - component: {fileID: 1763862387856979998}
   - component: {fileID: 4144452604036181726}
   - component: {fileID: 3408913372305955481}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -336,7 +336,7 @@ GameObject:
   - component: {fileID: 1610751518502257262}
   - component: {fileID: 7760015584780629372}
   - component: {fileID: 2057971335611428619}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -442,7 +442,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1991789448494259035}
   - component: {fileID: 4453098869472743823}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Vent-U
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -481,6 +481,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c128ed574a8a7478701a504250f8b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridSize: 1
+  shiftGridSize: 0.25
 --- !u!1 &9002327276031869434
 GameObject:
   m_ObjectHideFlags: 0
@@ -493,7 +495,7 @@ GameObject:
   - component: {fileID: 6634793979854938321}
   - component: {fileID: 6453406229078417713}
   - component: {fileID: 6016627666637195690}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

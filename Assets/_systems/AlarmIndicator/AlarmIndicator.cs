@@ -31,12 +31,20 @@ public class AlarmIndicator : NetworkBehaviour
 		base.OnStartClient();
 		if (IsOwner || !requireOwnershipForUIIndicator)
 		{
-			PlayerManager.Instance.OnLocalPlayerSpawned += InitTripwire;
-			//InitTripwire();
+			PlayerManager.Instance.OnLocalPlayerSpawned += InitTripwireDelegate;
+
+			if(MyClient.Instance.PlayerManager.LocalPlayerController != null)
+			{
+				InitTripwire();
+			}
+			
 		}
 	}
-
-	void InitTripwire(GameObject controller)
+	void InitTripwireDelegate(GameObject controller)
+	{
+		InitTripwire();
+	}
+	void InitTripwire()
 	{
 		Debug.Log(indicatorUI);
 		indicatorUI.InitialiseTargetIndicator(gameObject, MyClient.Instance.PlayerManager.LocalPlayerController.GetComponent<PlayerCharacter>().GetServiceLocator().PlayerCamera.GetComponent<Camera>());
@@ -117,7 +125,7 @@ public class AlarmIndicator : NetworkBehaviour
 		{
 			if(PlayerManager.Instance != null)
 			{
-				PlayerManager.Instance.OnLocalPlayerSpawned -= InitTripwire;
+				PlayerManager.Instance.OnLocalPlayerSpawned -= InitTripwireDelegate;
 			}
 		}
 	}
@@ -128,7 +136,7 @@ public class AlarmIndicator : NetworkBehaviour
 		{
 			if (PlayerManager.Instance != null)
 			{
-				PlayerManager.Instance.OnLocalPlayerSpawned -= InitTripwire;
+				PlayerManager.Instance.OnLocalPlayerSpawned -= InitTripwireDelegate;
 			}
 		}
 	}

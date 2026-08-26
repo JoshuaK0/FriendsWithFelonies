@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4140081590233741055}
   - component: {fileID: 7122744658249591359}
   - component: {fileID: 4727875037344939086}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Stairs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -862,7 +862,7 @@ GameObject:
   m_Component:
   - component: {fileID: 860747458481200057}
   - component: {fileID: 8982387575906395489}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Stair_1.1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -897,3 +897,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c128ed574a8a7478701a504250f8b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridSize: 1
+  shiftGridSize: 0.25

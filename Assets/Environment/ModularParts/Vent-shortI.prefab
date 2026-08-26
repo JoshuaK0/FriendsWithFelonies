@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5068025591278196831}
   - component: {fileID: 2065542807700690341}
   - component: {fileID: 438292531383921409}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6311664435478005827}
   - component: {fileID: 6178368336908200199}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Vent-shortI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,6 +156,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c128ed574a8a7478701a504250f8b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridSize: 1
+  shiftGridSize: 0.25
 --- !u!1 &7543542654195754612
 GameObject:
   m_ObjectHideFlags: 0
@@ -168,7 +170,7 @@ GameObject:
   - component: {fileID: 800183098328837784}
   - component: {fileID: 6820529182677124371}
   - component: {fileID: 8390983410796408652}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -276,7 +278,7 @@ GameObject:
   - component: {fileID: 719357172473545008}
   - component: {fileID: 6843248262091048093}
   - component: {fileID: 6902981941029927048}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -384,7 +386,7 @@ GameObject:
   - component: {fileID: 4220226727467735102}
   - component: {fileID: 7713891775836371296}
   - component: {fileID: 1019969528340156979}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -20,6 +20,14 @@ public sealed class DrillItem : HotbarHeldItem
 
 	private DrillItemNetworked networkedCounterpart;
 
+	void Start()
+	{
+		rayOrigin = MyClient.Instance.PlayerManager
+		.LocalPlayerController
+		.GetComponent<CharControllerServiceLocator>()
+		.muzzle;
+	}
+
 	protected override void OnContextInitialized()
 	{
 		networkedCounterpart =

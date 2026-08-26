@@ -55,14 +55,13 @@ MonoBehaviour:
   range: 100
   hitMask:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 262401
   pelletsPerShot: 1
   ragdollForce: 20
   baseSpread: 0.5
   bloomPerShot: 3
   maximumBloom: 10
   bloomRecoverySpeed: 9
-  fireOrigin: {fileID: 5551231901597937128}
   viewmodelHolder: {fileID: 7284249330715533051}
   viewmodelObjects:
   - {fileID: 4667511345538307491}
@@ -612,6 +611,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4742348811577898604, guid: 2735bebe54c1f5a4096f5134a96f7e77,
         type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4742348811577898604, guid: 2735bebe54c1f5a4096f5134a96f7e77,
+        type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 3
       objectReference: {fileID: 0}
@@ -683,6 +687,11 @@ PrefabInstance:
     - target: {fileID: 4836458910855560858, guid: 2735bebe54c1f5a4096f5134a96f7e77,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7473162747008166661, guid: 2735bebe54c1f5a4096f5134a96f7e77,
+        type: 3}
+      propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

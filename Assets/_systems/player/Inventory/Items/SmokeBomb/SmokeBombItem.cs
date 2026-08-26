@@ -7,7 +7,15 @@ public sealed class SmokeBombItem : HotbarHeldItem
 
     private SmokeBombItemNetworked networkedCounterpart;
 
-    protected override void OnContextInitialized()
+	void Start()
+	{
+		muzzle = MyClient.Instance.PlayerManager
+		.LocalPlayerController
+		.GetComponent<CharControllerServiceLocator>()
+		.muzzle;
+	}
+
+	protected override void OnContextInitialized()
     {
         networkedCounterpart = ItemServices != null ? ItemServices.GetNetworkedSmokeBomb() : null;
     }

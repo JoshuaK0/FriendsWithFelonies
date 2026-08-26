@@ -85,8 +85,8 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 2680390889208228742}
   wallLayers:
     serializedVersion: 2
-    m_Bits: 1
-  wallLayerName: Default
+    m_Bits: 262144
+  wallLayerName: Drillable
   timeToDrill: 30
   rb: {fileID: 2775857637049196558}
   drillArea: {x: 2, y: 2, z: 2}

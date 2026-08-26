@@ -3,6 +3,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using Game;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerCharacter : NetworkBehaviour
 {
@@ -39,6 +40,13 @@ public class PlayerCharacter : NetworkBehaviour
 
 	[SerializeField] NetHotbarInventory inventory;
 	[SerializeField] GameObject inventoryObject;
+
+	[Header("PostProcessing")]
+	[SerializeField] Slider NVGSlider;
+	[SerializeField] GameObject NVGFX;
+
+	[SerializeField] Slider ThermalGogglesSlider;
+	[SerializeField] GameObject ThermalGogglesFX;
 
 	private readonly SyncVar<int> teamId =
 		new(PlayerTeams.NoTeamId);
@@ -223,5 +231,25 @@ public class PlayerCharacter : NetworkBehaviour
 	public CharControllerServiceLocator GetServiceLocator()
 	{
 		return charControllerServiceLocator;
+	}
+
+	public Slider GetNVGSlider()
+	{
+		return NVGSlider;
+	}
+
+	public GameObject GetNVGFX()
+	{
+		return NVGFX;
+	}
+
+	public Slider GetThermalSlider()
+	{
+		return ThermalGogglesSlider;
+	}
+
+	public GameObject GetThermalFX()
+	{
+		return ThermalGogglesFX;
 	}
 }

@@ -9,7 +9,7 @@ using UnityEngine.Events;
 public sealed class TightRopeItem : HotbarHeldItem
 {
     [Header("Raycasts")]
-    [SerializeField] private Transform rayOrigin;
+    private Transform rayOrigin;
     [SerializeField] private LayerMask anchorMask = ~0;
     [SerializeField, Min(0f)] private float firstAnchorRange = 40f;
     [SerializeField, Min(0f)] private float secondAnchorRange = 8f;
@@ -36,6 +36,14 @@ public sealed class TightRopeItem : HotbarHeldItem
     {
         networkedCounterpart = ItemServices != null ? ItemServices.GetNetworkedTightRope() : null;
     }
+
+    void Start()
+    {
+		rayOrigin = MyClient.Instance.PlayerManager
+        .LocalPlayerController
+        .GetComponent<CharControllerServiceLocator>()
+        .muzzle;
+	}
 
     protected override void OnEquippedUpdate()
     {
