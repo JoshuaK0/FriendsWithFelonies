@@ -11,9 +11,12 @@ public sealed class JailInteractable :
 	NetworkBehaviour,
 	IInteractable
 {
-	[Header("Icon")]
+	[Header("Interaction")]
+	[SerializeField, Min(0f)]
+	private float interactionDuration;
+
 	[SerializeField]
-	private Transform iconAnchor;
+	private bool useDirectRaycast;
 
 	[Header("Server Validation")]
 	[Tooltip(
@@ -23,10 +26,8 @@ public sealed class JailInteractable :
 	[SerializeField, Min(0f)]
 	private float serverInteractionDistance = 3.5f;
 
-	public Transform IconAnchor =>
-		iconAnchor != null
-			? iconAnchor
-			: transform;
+	public float InteractionDuration => interactionDuration;
+	public bool UseDirectRaycast => useDirectRaycast;
 
 	/// <summary>
 	/// Called locally by PlayerInteractor.

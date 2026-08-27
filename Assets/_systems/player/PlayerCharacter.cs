@@ -187,10 +187,14 @@ public class PlayerCharacter : NetworkBehaviour
 		if(paused)
 		{
 			inventory.SetPaused(true);
+			mouseLook.enabled = false;
+			playerMovement.enabled = false;
 		}
 		else
 		{
 			inventory.SetPaused(false);
+			mouseLook.enabled = true;
+			playerMovement.enabled = true;
 		}
 	}
 

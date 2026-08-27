@@ -601,9 +601,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerBody: {fileID: 5650211434836626940}
   cameraHolder: {fileID: 345099769804867941}
-  mouseSensitivity: 200
-  minimumLookAngle: -90
-  maximumLookAngle: 90
+  mouseSensitivity: 100
+  minimumLookAngle: -89.9
+  maximumLookAngle: 89.9
 --- !u!114 &7001832778570804182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2773,6 +2773,9 @@ MonoBehaviour:
   bodyHitFx: {fileID: 1036925697551712, guid: a845e59c374ae0240812749e46f13033, type: 3}
   environmentHitFx: {fileID: 1067471869909948, guid: 5e02303289b3c494e8e185be0fbbd405,
     type: 3}
+  bulletProjectilePrefab: {fileID: 3266237933497074196, guid: e8190385cdb913a45a4f5a7e18ca00be,
+    type: 3}
+  projectileSpawnPoint: {fileID: 3558879091597391595}
 --- !u!82 &1993462109496164395
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3423,7 +3426,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 478615014938860179}
   m_Father: {fileID: 3973729965562340013}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6740879299537826158
@@ -3924,6 +3928,37 @@ MonoBehaviour:
   rate: 1
   footstepLifetime: 60
   minDistance: 0
+--- !u!1 &7420430063038063117
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 478615014938860179}
+  m_Layer: 0
+  m_Name: ForwardMuzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &478615014938860179
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7420430063038063117}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.282, y: -0.166, z: 0.453}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3558879091597391595}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7486270986773948687
 GameObject:
   m_ObjectHideFlags: 0
@@ -4684,6 +4719,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc198123ee731d646b3d8ca2874356f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactKey: 101
   cam: {fileID: 139788028713568210}
   maxInteractionDistance: 3
   maxAngle: 160.9
@@ -4695,8 +4731,7 @@ MonoBehaviour:
     m_Bits: 65
   iconUI: {fileID: 7204430093349567836}
   maxColliders: 32
-  debugLogs: 1
-  debugDrawRays: 1
+  drawDetectionRays: 0
 --- !u!1001 &2205869221328452385
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5829,17 +5864,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f74ddf9364f51445b6f9d3d2a92e35e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  icon: {fileID: 6176746331578577811}
-  worldOffset: {x: 0, y: 0, z: 0}
-  baseSize: 2
-  maxScale: 20
-  minScale: 0.25
---- !u!224 &6176746331578577811 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 309217067486052511, guid: 86a310862b0f8254d98b4fce894dee4d,
-    type: 3}
-  m_PrefabInstance: {fileID: 5904985852409197324}
-  m_PrefabAsset: {fileID: 0}
+  canvas: {fileID: 0}
+  iconRoot: {fileID: 0}
+  holdSlider: {fileID: 0}
 --- !u!1001 &6984004632491921531
 PrefabInstance:
   m_ObjectHideFlags: 0

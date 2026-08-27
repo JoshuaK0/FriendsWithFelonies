@@ -80,7 +80,7 @@ MonoBehaviour:
   bombCollider: {fileID: 1868489995818900583}
   normalOffset: 0.01
   damage: 100
-  explosionRadius: 10
+  explosionRadius: 8
   force: 5
   damageFalloff:
     serializedVersion: 2
@@ -112,7 +112,7 @@ MonoBehaviour:
   damageLayers:
     serializedVersion: 2
     m_Bits: 256
-  armTime: 1
+  armTime: 3
   fxLifetime: 2
   aestheticDelayRange: {x: 0, y: 0.2}
   audioSource: {fileID: 7639575177238984378}

@@ -5,8 +5,11 @@ using UnityEngine;
 public sealed class SecuritySwitch : NetworkBehaviour, IInteractable
 {
 	[Header("Interaction")]
+	[SerializeField, Min(0f)]
+	private float interactionDuration;
+
 	[SerializeField]
-	private Transform iconAnchor;
+	private bool useDirectRaycast;
 
 	[Header("Security")]
 	[SerializeField]
@@ -18,10 +21,8 @@ public sealed class SecuritySwitch : NetworkBehaviour, IInteractable
 
 	private Coroutine restartRoutine;
 
-	public Transform IconAnchor =>
-		iconAnchor != null
-			? iconAnchor
-			: transform;
+	public float InteractionDuration => interactionDuration;
+	public bool UseDirectRaycast => useDirectRaycast;
 
 	public void Interact(GameObject interactor)
 	{

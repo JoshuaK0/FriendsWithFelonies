@@ -46,16 +46,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nightVisionAmbientLight: {r: 0.14901961, g: 0.14901961, b: 0.14901961, a: 0}
-  nightVisionSkyColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
-  nightVisionEquatorColor: {r: 0, g: 0, b: 0, a: 0}
-  nightVisionGroundColor: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 1}
   nightVisionAmbientMode: 1
   nightVisionLerpDuration: 0.3
   nightVisionReflectionIntensity: 0
   audioSource: {fileID: 9072372241837423000}
-  toggleClip: {fileID: 8300000, guid: 503de6bf0c32f134f96d4a92662f3e45, type: 3}
-  duration: 15
-  consumeRate: 1
+  toggleClip: {fileID: 8300000, guid: f10e7ff812627164fa39911459400577, type: 3}
+  duration: 30
+  consumeRate: 0
 --- !u!82 &9072372241837423000
 AudioSource:
   m_ObjectHideFlags: 0

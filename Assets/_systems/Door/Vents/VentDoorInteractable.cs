@@ -4,10 +4,13 @@ using FishNet.Object.Synchronizing;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class VentDoorInteractable : NetworkBehaviour, IInteractable
+public class VentDoorInteractable :
+	NetworkBehaviour,
+	IInteractable
 {
 	[Header("Interaction")]
-	[SerializeField] private Transform iconAnchor;
+	[SerializeField, Min(0f)] private float interactionDuration;
+	[SerializeField] private bool useDirectRaycast;
 	[SerializeField] private UnityEvent onInteract;
 
 	[Header("Vent Objects")]
@@ -29,8 +32,8 @@ public class VentDoorInteractable : NetworkBehaviour, IInteractable
 
 	private Coroutine transitionCoroutine;
 
-	public Transform IconAnchor =>
-		iconAnchor != null ? iconAnchor : transform;
+	public float InteractionDuration => interactionDuration;
+	public bool UseDirectRaycast => useDirectRaycast;
 
 	private void Awake()
 	{

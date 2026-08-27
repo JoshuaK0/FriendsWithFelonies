@@ -1,6 +1,5 @@
 using FishNet.Object;
 using UnityEngine;
-using static Evo.UI.ProgressButton;
 
 public sealed class GunItemNetworked : NetworkBehaviour
 {
@@ -17,6 +16,15 @@ public sealed class GunItemNetworked : NetworkBehaviour
 	[SerializeField]
 	private GameObject environmentHitFx;
 
+	[Header("Projectile Visual")]
+	[SerializeField]
+	private GameObject bulletProjectilePrefab;
+
+	[Tooltip(
+		"Where visual projectiles are spawned. " +
+		"If empty, the supplied firing origin is used.")]
+	[SerializeField]
+	private Transform projectileSpawnPoint;
 
 	/*
 	 * Prevents an accidentally configured shotgun from sending
@@ -27,7 +35,6 @@ public sealed class GunItemNetworked : NetworkBehaviour
 	private const int MaximumPelletsPerRequest = 64;
 
 	private float nextAllowedFireTime;
-
 
 	public void RequestFire(
 		Vector3 origin,
@@ -48,6 +55,14 @@ public sealed class GunItemNetworked : NetworkBehaviour
 			return;
 		}
 
+		/*
+		 * Spawn immediately for the owner so the projectile
+		 * does not wait for a server round trip.
+		 */
+		SpawnProjectiles(
+			origin,
+			directions);
+
 		FireServerRpc(
 			origin,
 			directions,
@@ -58,7 +73,6 @@ public sealed class GunItemNetworked : NetworkBehaviour
 			ragdollForce,
 			teamId);
 	}
-
 
 	[ServerRpc]
 	private void FireServerRpc(
@@ -77,12 +91,10 @@ public sealed class GunItemNetworked : NetworkBehaviour
 			return;
 		}
 
-
 		roundsPerMinute =
 			Mathf.Max(
 				1f,
 				roundsPerMinute);
-
 
 		if (Time.time <
 			nextAllowedFireTime)
@@ -90,12 +102,10 @@ public sealed class GunItemNetworked : NetworkBehaviour
 			return;
 		}
 
-
 		nextAllowedFireTime =
 			Time.time +
 			60f /
 			roundsPerMinute;
-
 
 		damage =
 			Mathf.Max(
@@ -112,21 +122,20 @@ public sealed class GunItemNetworked : NetworkBehaviour
 				0f,
 				ragdollForce);
 
-
 		/*
-		 * Send the gunshot to everyone EXCEPT
-		 * the shooting client.
+		 * Send the firing audio and visual projectiles to
+		 * everyone except the shooting client.
 		 *
-		 * The owner already played the shot locally.
+		 * The owner already played/spawned them locally.
 		 */
-		PlayFireObserversRpc();
-
+		PlayFireEffectsObserversRpc(
+			origin,
+			directions);
 
 		int directionCount =
 			Mathf.Min(
 				directions.Length,
 				MaximumPelletsPerRequest);
-
 
 		for (int i = 0;
 			i < directionCount;
@@ -135,26 +144,14 @@ public sealed class GunItemNetworked : NetworkBehaviour
 			Vector3 direction =
 				directions[i];
 
-
 			if (direction.sqrMagnitude <=
 				0.001f)
 			{
 				continue;
 			}
 
-
 			direction.Normalize();
 
-
-			/*
-			 * IMPORTANT:
-			 *
-			 * Use Collide so trigger-based player
-			 * hitboxes are included.
-			 *
-			 * The local GunItem raycast uses the
-			 * same trigger behaviour.
-			 */
 			if (!Physics.Raycast(
 					origin,
 					direction,
@@ -166,19 +163,10 @@ public sealed class GunItemNetworked : NetworkBehaviour
 				continue;
 			}
 
-
-			/*
-			 * Look for the Hitbox directly first.
-			 */
 			Hitbox hitbox =
 				hit.collider
 					.GetComponent<Hitbox>();
 
-
-			/*
-			 * Also support setups where the collider
-			 * is below the Hitbox in the hierarchy.
-			 */
 			if (hitbox == null)
 			{
 				hitbox =
@@ -186,21 +174,17 @@ public sealed class GunItemNetworked : NetworkBehaviour
 						.GetComponentInParent<Hitbox>();
 			}
 
-
 			bool hitBody =
 				hitbox != null;
 
-
 			/*
-			 * DAMAGE IS SERVER-ONLY.
-			 *
-			 * The local GunItem never calls TakeDamage.
+			 * Damage remains server-only and hitscan.
+			 * BulletProjectile is only a visual object.
 			 */
 			if (hitbox != null)
 			{
 				HealthManager healthManager =
 					hitbox.GetHealthManager();
-
 
 				if (healthManager != null &&
 					healthManager.TeamId != teamId)
@@ -215,14 +199,6 @@ public sealed class GunItemNetworked : NetworkBehaviour
 				}
 			}
 
-
-			/*
-			 * Send the server-confirmed impact to
-			 * everyone except the shooter.
-			 *
-			 * The shooter already spawned an
-			 * immediate predicted impact locally.
-			 */
 			SpawnHitObserversRpc(
 				hit.point,
 				hit.normal,
@@ -230,36 +206,64 @@ public sealed class GunItemNetworked : NetworkBehaviour
 		}
 	}
 
-
-	/*
-	 * Owner already plays their firing audio locally.
-	 *
-	 * Excluding owner prevents the shot from being
-	 * heard twice by the shooting player.
-	 */
 	[ObserversRpc(ExcludeOwner = true)]
-	private void PlayFireObserversRpc()
+	private void PlayFireEffectsObserversRpc(
+		Vector3 origin,
+		Vector3[] directions)
 	{
-		if (networkAudioSource == null)
+		if (networkAudioSource != null &&
+			fireSound != null)
 		{
-			return;
+			networkAudioSource.PlayOneShot(
+				fireSound);
 		}
 
-		if (fireSound == null)
-		{
-			return;
-		}
-
-		networkAudioSource.PlayOneShot(
-			fireSound);
+		SpawnProjectiles(
+			origin,
+			directions);
 	}
 
+	private void SpawnProjectiles(
+		Vector3 fallbackOrigin,
+		Vector3[] directions)
+	{
+		if (bulletProjectilePrefab == null ||
+			directions == null)
+		{
+			return;
+		}
 
-	/*
-	 * Owner already spawned an immediate impact locally.
-	 *
-	 * Other clients receive the server-confirmed impact.
-	 */
+		Vector3 spawnPosition =
+			projectileSpawnPoint != null
+				? projectileSpawnPoint.position
+				: fallbackOrigin;
+
+		int directionCount =
+			Mathf.Min(
+				directions.Length,
+				MaximumPelletsPerRequest);
+
+		for (int i = 0;
+			i < directionCount;
+			i++)
+		{
+			Vector3 direction =
+				directions[i];
+
+			if (direction.sqrMagnitude <=
+				0.001f)
+			{
+				continue;
+			}
+
+			Instantiate(
+				bulletProjectilePrefab,
+				spawnPosition,
+				Quaternion.LookRotation(
+					direction.normalized));
+		}
+	}
+
 	[ObserversRpc(ExcludeOwner = true)]
 	private void SpawnHitObserversRpc(
 		Vector3 point,
@@ -271,12 +275,8 @@ public sealed class GunItemNetworked : NetworkBehaviour
 				? bodyHitFx
 				: environmentHitFx;
 
-
 		if (prefab == null)
-		{
 			return;
-		}
-
 
 		Instantiate(
 			prefab,

@@ -2,11 +2,16 @@ using FishNet.Connection;
 using FishNet.Object;
 using UnityEngine;
 
-public sealed class ElectricalSwitch : NetworkBehaviour, IInteractable
+public sealed class ElectricalSwitch :
+	NetworkBehaviour,
+	IInteractable
 {
 	[Header("Interaction")]
+	[SerializeField, Min(0f)]
+	private float interactionDuration;
+
 	[SerializeField]
-	private Transform iconAnchor;
+	private bool useDirectRaycast;
 
 	[SerializeField, Min(0f)]
 	private float maxInteractionDistance = 3.5f;
@@ -22,10 +27,8 @@ public sealed class ElectricalSwitch : NetworkBehaviour, IInteractable
 	[SerializeField]
 	private AudioSource audioSource;
 
-	public Transform IconAnchor =>
-		iconAnchor != null
-			? iconAnchor
-			: transform;
+	public float InteractionDuration => interactionDuration;
+	public bool UseDirectRaycast => useDirectRaycast;
 
 	public void Interact(GameObject interactor)
 	{
@@ -71,7 +74,7 @@ public sealed class ElectricalSwitch : NetworkBehaviour, IInteractable
 
 		float distance = Vector3.Distance(
 			interactor.transform.position,
-			IconAnchor.position
+			transform.position
 		);
 
 		if (distance > maxInteractionDistance)

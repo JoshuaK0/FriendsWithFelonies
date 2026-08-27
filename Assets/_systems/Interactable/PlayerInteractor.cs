@@ -2,530 +2,367 @@ using UnityEngine;
 
 public sealed class PlayerInteractor : MonoBehaviour
 {
+	[Header("Input")]
+	[SerializeField] private KeyCode interactKey = KeyCode.E;
+
 	[Header("Search")]
 	[SerializeField] private Camera cam;
-	[SerializeField] private float maxInteractionDistance = 3f;
-
-	[SerializeField, Range(1f, 180f)]
-	private float maxAngle = 25f;
-
-	[SerializeField]
-	private LayerMask interactableMask = ~0;
+	[SerializeField, Min(0f)] private float maxInteractionDistance = 3f;
+	[SerializeField, Range(1f, 180f)] private float maxAngle = 25f;
+	[SerializeField] private LayerMask interactableMask = ~0;
 
 	[Header("Line of Sight")]
-	[SerializeField]
-	private LayerMask losBlockMask = ~0;
+	[SerializeField] private LayerMask losBlockMask = ~0;
 
 	[Header("UI")]
-	[SerializeField]
-	private InteractIconUI iconUI;
+	[SerializeField] private InteractIconUI iconUI;
 
 	[Header("Performance")]
-	[SerializeField]
-	private int maxColliders = 32;
+	[SerializeField, Min(4)] private int maxColliders = 32;
 
 	[Header("Debug")]
-	[SerializeField]
-	private bool debugLogs = true;
+	[SerializeField] private bool drawDetectionRays;
 
-	[SerializeField]
-	private bool debugDrawRays = true;
+	private Collider[] colliderBuffer;
 
-	private Collider[] _buffer;
+	private IInteractable current;
+	private Transform currentAnchor;
+	private bool currentUsesDirectRaycast;
+	private bool canInteract;
+	private string cannotInteractReason = string.Empty;
 
-	private IInteractable _current;
+	private IInteractable holdTarget;
+	private float holdTime;
+	private bool isHolding;
+	private bool waitForKeyRelease;
 
-	private bool _canInteract;
-	private string _cannotInteractReason = string.Empty;
-
-	public IInteractable CurrentInteractable =>
-		_current;
-
-	public bool CanInteract =>
-		_current != null && _canInteract;
-
-	public string CannotInteractReason =>
-		_cannotInteractReason;
+	public IInteractable CurrentInteractable => current;
+	public bool CanInteract => current != null && canInteract;
+	public string CannotInteractReason => cannotInteractReason;
 
 	private void Awake()
 	{
-		DebugLog("Awake started.");
-
 		if (cam == null)
-		{
 			cam = Camera.main;
 
-			DebugLog(
-				cam != null
-					? $"Camera was null. Found Camera.main: {cam.name}"
-					: "Camera was null and Camera.main could not be found.");
-		}
-		else
-		{
-			DebugLog($"Using assigned camera: {cam.name}");
-		}
-
-		_buffer =
-			new Collider[Mathf.Max(4, maxColliders)];
-
-		DebugLog(
-			$"Collider buffer created. Size: {_buffer.Length}");
+		colliderBuffer = new Collider[Mathf.Max(4, maxColliders)];
 	}
 
 	private void Update()
 	{
-		UpdateTarget();
+		IInteractable previous = current;
 
-		if (!Input.GetKeyDown(KeyCode.E))
-			return;
+		FindCurrentTarget();
 
-		DebugLog("E pressed.");
+		if (!ReferenceEquals(previous, current))
+			CancelHold();
 
-		if (_current == null)
-		{
-			DebugLog(
-				"E pressed but there is no current interactable.");
-
-			return;
-		}
-
-		DebugLog(
-			$"Attempting interaction with: {GetInteractableName(_current)}");
-
-		if (!_current.CanInteract(
-			gameObject,
-			out string reason))
-		{
-			Debug.Log(
-				string.IsNullOrEmpty(reason)
-					? "[PlayerInteractor] Cannot interact. No reason supplied."
-					: $"[PlayerInteractor] Cannot interact: {reason}",
-				gameObject);
-
-			return;
-		}
-
-		DebugLog(
-			$"CanInteract returned TRUE. Calling Interact() on {GetInteractableName(_current)}");
-
-		_current.Interact(gameObject);
+		UpdateAvailability();
+		UpdateInteractionInput();
+		UpdateIcon();
 	}
 
-	private void UpdateTarget()
+	private void OnDisable()
 	{
-		DebugLog("");
-		DebugLog("========== UPDATE TARGET ==========");
+		CancelHold();
+		iconUI?.Hide();
+	}
 
-		_current = null;
-		_canInteract = false;
-		_cannotInteractReason = string.Empty;
+	private void FindCurrentTarget()
+	{
+		current = null;
+		currentAnchor = null;
+		currentUsesDirectRaycast = false;
 
 		if (cam == null)
-		{
-			DebugLog(
-				"ABORT: Camera is null.");
+			return;
 
+		// An exact mouse ray wins over the wider cone search.
+		if (TryFindDirectRaycastTarget(out IInteractable directTarget))
+		{
+			current = directTarget;
+			currentUsesDirectRaycast = true;
 			return;
 		}
 
-		if (iconUI == null)
-		{
-			DebugLog(
-				"ABORT: InteractIconUI is null.");
+		TryFindConeTarget(out current, out currentAnchor);
+	}
 
-			return;
+	private bool TryFindDirectRaycastTarget(out IInteractable interactable)
+	{
+		interactable = null;
+
+		Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+		int rayMask = interactableMask.value | losBlockMask.value;
+
+		if (drawDetectionRays)
+			Debug.DrawRay(ray.origin, ray.direction * maxInteractionDistance, Color.blue);
+
+		if (!Physics.Raycast(
+			ray,
+			out RaycastHit hit,
+			maxInteractionDistance,
+			rayMask,
+			QueryTriggerInteraction.Collide))
+		{
+			return false;
 		}
 
-		Vector3 origin =
-			cam.transform.position;
+		// The first hit can be an LOS blocker. Only colliders on the
+		// interactable mask are allowed to become an interaction target.
+		if (!LayerIsInMask(hit.collider.gameObject.layer, interactableMask))
+			return false;
 
-		Vector3 forward =
-			cam.transform.forward;
+		IInteractable hitInteractable =
+			hit.collider.GetComponentInParent<IInteractable>();
 
-		DebugLog(
-			$"Camera origin: {origin}");
+		if (hitInteractable == null || !hitInteractable.UseDirectRaycast)
+			return false;
 
-		DebugLog(
-			$"Camera forward: {forward}");
+		interactable = hitInteractable;
+		return true;
+	}
 
-		DebugLog(
-			$"Max distance: {maxInteractionDistance}");
+	private bool TryFindConeTarget(
+		out IInteractable bestInteractable,
+		out Transform bestAnchor)
+	{
+		bestInteractable = null;
+		bestAnchor = null;
 
-		DebugLog(
-			$"Max angle: {maxAngle}");
+		Vector3 origin = cam.transform.position;
+		Vector3 forward = cam.transform.forward;
 
 		int count = Physics.OverlapSphereNonAlloc(
 			origin,
 			maxInteractionDistance,
-			_buffer,
+			colliderBuffer,
 			interactableMask,
 			QueryTriggerInteraction.Collide);
 
-		DebugLog(
-			$"OverlapSphere found {count} collider(s).");
-
-		if (count >= _buffer.Length)
-		{
-			Debug.LogWarning(
-				$"[PlayerInteractor] OverlapSphere filled the entire buffer ({_buffer.Length}). " +
-				"Some colliders may have been missed. Increase maxColliders.",
-				gameObject);
-		}
-
-		float bestScore =
-			float.PositiveInfinity;
-
-		Transform bestAnchor = null;
-
-		IInteractable bestInteractable = null;
+		float bestScore = float.PositiveInfinity;
 
 		for (int i = 0; i < count; i++)
 		{
-			DebugLog(
-				$"---------- Candidate {i + 1}/{count} ----------");
+			Collider candidateCollider = colliderBuffer[i];
 
-			Collider col = _buffer[i];
-
-			if (col == null)
-			{
-				DebugLog(
-					"REJECTED: Collider is null.");
-
+			if (candidateCollider == null)
 				continue;
-			}
 
-			DebugLog(
-				$"Collider: {col.name}");
+			IInteractable candidate =
+				candidateCollider.GetComponentInParent<IInteractable>();
 
-			DebugLog(
-				$"GameObject: {col.gameObject.name}");
-
-			DebugLog(
-				$"Layer: {LayerMask.LayerToName(col.gameObject.layer)} ({col.gameObject.layer})");
-
-			DebugLog(
-				$"Is Trigger: {col.isTrigger}");
-
-			DebugLog(
-				$"Enabled: {col.enabled}");
-
-			DebugLog(
-				$"Bounds center: {col.bounds.center}");
-
-			DebugLog(
-				$"Bounds size: {col.bounds.size}");
-
-			IInteractable interactable =
-				col.GetComponentInParent<IInteractable>();
-
-			if (interactable == null)
-			{
-				DebugLog(
-					"REJECTED: No IInteractable found on collider or parents.");
-
+			if (candidate == null || candidate.UseDirectRaycast)
 				continue;
-			}
 
-			DebugLog(
-				$"IInteractable found: {GetInteractableName(interactable)}");
+			Transform anchor = GetIconAnchor(
+				candidate,
+				candidateCollider.transform);
+			Vector3 targetPosition =
+				anchor != null
+					? anchor.position
+					: candidateCollider.transform.position;
 
-			Transform anchor =
-				interactable.IconAnchor != null
-					? interactable.IconAnchor
-					: col.transform;
+			Vector3 toTarget = targetPosition - origin;
+			float distance = toTarget.magnitude;
 
-			DebugLog(
-				interactable.IconAnchor != null
-					? $"Using IconAnchor: {anchor.name}"
-					: $"IconAnchor is null. Using collider transform: {anchor.name}");
-
-			DebugLog(
-				$"Anchor position: {anchor.position}");
-
-			Vector3 to =
-				anchor.position - origin;
-
-			float dist =
-				to.magnitude;
-
-			DebugLog(
-				$"Vector to anchor: {to}");
-
-			DebugLog(
-				$"Distance to anchor: {dist:F4}");
-
-			if (dist <= 0.0001f)
-			{
-				DebugLog(
-					"REJECTED: Distance is <= 0.0001. " +
-					"Camera may effectively be at the anchor position.");
-
+			if (distance <= 0.0001f || distance > maxInteractionDistance)
 				continue;
-			}
 
-			if (dist > maxInteractionDistance)
-			{
-				DebugLog(
-					$"REJECTED: Distance {dist:F4} exceeds max interaction distance {maxInteractionDistance:F4}.");
-
-				continue;
-			}
-
-			Vector3 dir =
-				to / dist;
-
-			DebugLog(
-				$"Direction to anchor: {dir}");
-
-			float dot =
-				Vector3.Dot(forward.normalized, dir);
-
-			float angle =
-				Vector3.Angle(forward, dir);
-
-			DebugLog(
-				$"Dot product: {dot:F4}");
-
-			DebugLog(
-				$"Angle: {angle:F2} degrees");
+			Vector3 direction = toTarget / distance;
+			float angle = Vector3.Angle(forward, direction);
 
 			if (angle > maxAngle)
-			{
-				DebugLog(
-					$"REJECTED: Angle {angle:F2} exceeds max angle {maxAngle:F2}.");
-
-				if (debugDrawRays)
-					Debug.DrawRay(
-						origin,
-						dir * dist,
-						Color.yellow);
-
 				continue;
-			}
 
-			DebugLog(
-				"PASSED angle check.");
+			if (!HasLineOfSight(origin, direction, distance, candidate))
+				continue;
 
-			if (debugDrawRays)
-			{
-				Debug.DrawRay(
-					origin,
-					dir * dist,
-					Color.cyan);
-			}
+			// Looking directly at something matters more than a small
+			// difference in distance.
+			float score = angle * 10f + distance;
 
-			bool hitSomething =
-				Physics.Raycast(
-					origin,
-					dir,
-					out RaycastHit hit,
-					dist,
-					losBlockMask,
-					QueryTriggerInteraction.Collide);
+			if (score >= bestScore)
+				continue;
 
-			DebugLog(
-				hitSomething
-					? "LOS raycast HIT something."
-					: "LOS raycast hit nothing.");
-
-			if (hitSomething)
-			{
-				DebugLog(
-					$"LOS hit collider: {hit.collider.name}");
-
-				DebugLog(
-					$"LOS hit GameObject: {hit.collider.gameObject.name}");
-
-				DebugLog(
-					$"LOS hit layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)} ({hit.collider.gameObject.layer})");
-
-				DebugLog(
-					$"LOS hit trigger: {hit.collider.isTrigger}");
-
-				DebugLog(
-					$"LOS hit distance: {hit.distance:F4}");
-
-				DebugLog(
-					$"LOS hit point: {hit.point}");
-
-				DebugLog(
-					$"LOS hit normal: {hit.normal}");
-
-				IInteractable hitInteractable =
-					hit.collider
-						.GetComponentInParent<IInteractable>();
-
-				if (hitInteractable == null)
-				{
-					DebugLog(
-						"LOS hit object has NO IInteractable.");
-				}
-				else
-				{
-					DebugLog(
-						$"LOS hit interactable: {GetInteractableName(hitInteractable)}");
-				}
-
-				if (hitInteractable != interactable)
-				{
-					DebugLog(
-						$"REJECTED: Line of sight blocked by " +
-						$"'{hit.collider.name}'.");
-
-					if (debugDrawRays)
-					{
-						Debug.DrawLine(
-							origin,
-							hit.point,
-							Color.red);
-					}
-
-					continue;
-				}
-
-				DebugLog(
-					"LOS ray hit the SAME interactable. Allowing candidate.");
-
-				if (debugDrawRays)
-				{
-					Debug.DrawLine(
-						origin,
-						hit.point,
-						Color.green);
-				}
-			}
-
-			float score =
-				angle * 10f + dist;
-
-			DebugLog(
-				$"Candidate score: {score:F4}");
-
-			DebugLog(
-				$"Current best score: {bestScore:F4}");
-
-			if (score < bestScore)
-			{
-				DebugLog(
-					$"NEW BEST candidate: {GetInteractableName(interactable)}");
-
-				bestScore = score;
-				bestAnchor = anchor;
-				bestInteractable = interactable;
-			}
-			else
-			{
-				DebugLog(
-					"Candidate valid, but score is worse than current best.");
-			}
+			bestScore = score;
+			bestInteractable = candidate;
+			bestAnchor = anchor != null
+				? anchor
+				: candidateCollider.transform;
 		}
 
-		DebugLog(
-			"---------- SEARCH COMPLETE ----------");
+		return bestInteractable != null;
+	}
 
-		if (bestInteractable == null)
+	private bool HasLineOfSight(
+		Vector3 origin,
+		Vector3 direction,
+		float distance,
+		IInteractable candidate)
+	{
+		if (drawDetectionRays)
+			Debug.DrawRay(origin, direction * distance, Color.cyan);
+
+		if (!Physics.Raycast(
+			origin,
+			direction,
+			out RaycastHit hit,
+			distance,
+			losBlockMask,
+			QueryTriggerInteraction.Collide))
 		{
-			DebugLog(
-				"RESULT: No valid interactable found.");
+			return true;
+		}
 
+		IInteractable hitInteractable =
+			hit.collider.GetComponentInParent<IInteractable>();
+
+		return ReferenceEquals(hitInteractable, candidate);
+	}
+
+	private void UpdateAvailability()
+	{
+		canInteract = false;
+		cannotInteractReason = string.Empty;
+
+		if (current == null)
+			return;
+
+		canInteract = current.CanInteract(
+			gameObject,
+			out cannotInteractReason);
+
+		if (canInteract)
+			cannotInteractReason = string.Empty;
+	}
+
+	private void UpdateInteractionInput()
+	{
+		if (Input.GetKeyUp(interactKey))
+		{
+			waitForKeyRelease = false;
+			CancelHold();
+		}
+
+		if (current == null || !canInteract)
+		{
+			CancelHold();
+			return;
+		}
+
+		if (waitForKeyRelease)
+			return;
+
+		float duration = Mathf.Max(0f, current.InteractionDuration);
+
+		if (duration <= 0f)
+		{
+			if (Input.GetKeyDown(interactKey))
+				CompleteInteraction();
+
+			return;
+		}
+
+		if (Input.GetKeyDown(interactKey))
+		{
+			holdTarget = current;
+			holdTime = 0f;
+			isHolding = true;
+		}
+
+		if (!isHolding || !Input.GetKey(interactKey))
+			return;
+
+		if (!ReferenceEquals(holdTarget, current))
+		{
+			CancelHold();
+			return;
+		}
+
+		holdTime += Time.deltaTime;
+
+		if (holdTime >= duration)
+			CompleteInteraction();
+	}
+
+	private void CompleteInteraction()
+	{
+		IInteractable target = current;
+		string reason = string.Empty;
+
+		CancelHold();
+		waitForKeyRelease = true;
+
+		// Recheck at completion because the interaction may have become
+		// invalid while the key was being held.
+		if (target == null ||
+			!target.CanInteract(gameObject, out reason))
+		{
+			cannotInteractReason = reason ?? string.Empty;
+			canInteract = false;
+			return;
+		}
+
+		target.Interact(gameObject);
+	}
+
+	private void UpdateIcon()
+	{
+		if (iconUI == null)
+			return;
+
+		if (current == null)
+		{
 			iconUI.Hide();
-
 			return;
 		}
 
-		DebugLog(
-			$"RESULT: Selected interactable: {GetInteractableName(bestInteractable)}");
-
-		DebugLog(
-			$"Selected score: {bestScore:F4}");
-
-		_current =
-			bestInteractable;
-
-		_canInteract =
-			_current.CanInteract(
-				gameObject,
-				out _cannotInteractReason);
-
-		DebugLog(
-			$"CanInteract returned: {_canInteract}");
-
-		if (!_canInteract)
-		{
-			DebugLog(
-				string.IsNullOrEmpty(_cannotInteractReason)
-					? "CanInteract returned FALSE with no reason."
-					: $"Cannot interact reason: {_cannotInteractReason}");
-		}
-
-		if (_canInteract)
-		{
-			_cannotInteractReason =
-				string.Empty;
-
-			DebugLog(
-				"Interactable is READY for interaction.");
-		}
-
-		if (bestAnchor == null)
-		{
-			DebugLog(
-				"WARNING: bestAnchor is null.");
-		}
+		if (currentUsesDirectRaycast)
+			iconUI.ShowCentered();
 		else
-		{
-			DebugLog(
-				$"Showing interaction icon at anchor: {bestAnchor.name}");
+			iconUI.ShowWorld(currentAnchor, cam);
 
-			iconUI.Show(
-				bestAnchor,
-				cam);
-		}
+		float duration = Mathf.Max(0f, current.InteractionDuration);
+		bool showProgress = isHolding && duration > 0f;
+		float progress = showProgress ? holdTime / duration : 0f;
+
+		iconUI.SetHoldProgress(progress, showProgress);
 	}
 
-	public bool CanInteractWith(
-		IInteractable interactable)
+	private void CancelHold()
 	{
-		bool result =
-			_current == interactable &&
-			_canInteract;
+		holdTarget = null;
+		holdTime = 0f;
+		isHolding = false;
 
-		if (debugLogs)
-		{
-			Debug.Log(
-				$"[PlayerInteractor] CanInteractWith(" +
-				$"{GetInteractableName(interactable)}) = {result} | " +
-				$"Current: {GetInteractableName(_current)} | " +
-				$"CanInteract: {_canInteract}",
-				gameObject);
-		}
-
-		return result;
+		iconUI?.SetHoldProgress(0f, false);
 	}
 
-	private void DebugLog(string message)
+	public bool CanInteractWith(IInteractable interactable)
 	{
-		if (!debugLogs)
-			return;
-
-		Debug.Log(
-			$"[PlayerInteractor] {message}",
-			gameObject);
+		return ReferenceEquals(current, interactable) && canInteract;
 	}
 
-	private string GetInteractableName(
-		IInteractable interactable)
+	private static bool LayerIsInMask(int layer, LayerMask mask)
 	{
-		if (interactable == null)
-			return "NULL";
+		return (mask.value & (1 << layer)) != 0;
+	}
 
-		if (interactable is Component component)
-		{
-			return
-				$"{component.gameObject.name} " +
-				$"({component.GetType().Name})";
-		}
+	private static Transform GetIconAnchor(
+		IInteractable interactable,
+		Transform fallback)
+	{
+		Component interactableComponent = interactable as Component;
 
-		return interactable.GetType().Name;
+		if (interactableComponent == null)
+			return fallback;
+
+		InteractIconAnchor customAnchor =
+			interactableComponent.GetComponent<InteractIconAnchor>();
+
+		return customAnchor != null
+			? customAnchor.Anchor
+			: interactableComponent.transform;
 	}
 }

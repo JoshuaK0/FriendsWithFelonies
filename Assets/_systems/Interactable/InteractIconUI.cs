@@ -1,90 +1,128 @@
 using UnityEngine;
+using UnityEngine.UI;
 
-[RequireComponent(typeof(RectTransform))]
 public sealed class InteractIconUI : MonoBehaviour
 {
-	[SerializeField] private RectTransform icon;
+	[SerializeField] private Canvas canvas;
+	[SerializeField] private RectTransform iconRoot;
+	[SerializeField] private Slider holdSlider;
 
-	[Header("Position")]
-	[SerializeField] private Vector3 worldOffset = Vector3.zero;
-
-	[Header("Scale")]
-	[SerializeField] private float baseSize = 120f;
-	[SerializeField] private float maxScale = 1.5f;
-	[SerializeField] private float minScale = 0.25f;
-
-	private Transform _target;
-	private Camera _cam;
+	private Transform worldAnchor;
+	private Camera worldCamera;
+	private bool isCentered;
 
 	private void Awake()
 	{
-		if (icon == null)
-			icon = GetComponent<RectTransform>();
+		if (canvas == null)
+			canvas = GetComponentInParent<Canvas>();
+
+		if (iconRoot == null)
+			iconRoot = transform as RectTransform;
 
 		Hide();
 	}
 
-	public void Show(Transform target, Camera cam)
+	private void LateUpdate()
 	{
-		_target = target;
-		_cam = cam;
+		if (iconRoot == null || !iconRoot.gameObject.activeSelf)
+			return;
 
-		SetIconVisible(true);
+		if (isCentered)
+		{
+			SetScreenPosition(new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+			return;
+		}
+
+		if (worldAnchor == null || worldCamera == null)
+		{
+			Hide();
+			return;
+		}
+
+		Vector3 screenPosition =
+			worldCamera.WorldToScreenPoint(worldAnchor.position);
+
+		if (screenPosition.z <= 0f)
+		{
+			iconRoot.gameObject.SetActive(false);
+			return;
+		}
+
+		SetScreenPosition(screenPosition);
+	}
+
+	public void ShowWorld(Transform anchor, Camera targetCamera)
+	{
+		if (iconRoot == null || anchor == null || targetCamera == null)
+		{
+			Hide();
+			return;
+		}
+
+		worldAnchor = anchor;
+		worldCamera = targetCamera;
+		isCentered = false;
+		iconRoot.gameObject.SetActive(true);
+	}
+
+	public void ShowCentered()
+	{
+		if (iconRoot == null)
+			return;
+
+		worldAnchor = null;
+		worldCamera = null;
+		isCentered = true;
+		iconRoot.gameObject.SetActive(true);
+	}
+
+	public void SetHoldProgress(float normalizedProgress, bool visible)
+	{
+		if (holdSlider == null)
+			return;
+
+		holdSlider.value = Mathf.Clamp01(normalizedProgress);
+		holdSlider.gameObject.SetActive(visible);
 	}
 
 	public void Hide()
 	{
-		_target = null;
-		_cam = null;
+		worldAnchor = null;
+		worldCamera = null;
+		isCentered = false;
 
-		SetIconVisible(false);
+		if (holdSlider != null)
+		{
+			holdSlider.value = 0f;
+			holdSlider.gameObject.SetActive(false);
+		}
+
+		if (iconRoot != null)
+			iconRoot.gameObject.SetActive(false);
 	}
 
-	private void LateUpdate()
+	private void SetScreenPosition(Vector2 screenPosition)
 	{
-		if (_target == null || _cam == null || icon == null)
-			return;
+		RectTransform parent = iconRoot.parent as RectTransform;
 
-		Vector3 worldPosition = _target.position + worldOffset;
-
-		Vector3 screenPosition =
-			_cam.WorldToScreenPoint(worldPosition);
-
-		bool isVisible =
-			screenPosition.z > 0f &&
-			screenPosition.x >= 0f &&
-			screenPosition.x <= Screen.width &&
-			screenPosition.y >= 0f &&
-			screenPosition.y <= Screen.height;
-
-		if (!isVisible)
+		if (parent == null || canvas == null)
 		{
-			SetIconVisible(false);
+			iconRoot.position = screenPosition;
 			return;
 		}
 
-		SetIconVisible(true);
+		Camera uiCamera =
+			canvas.renderMode == RenderMode.ScreenSpaceOverlay
+				? null
+				: canvas.worldCamera;
 
-		// Screen Space Overlay uses screen coordinates directly.
-		icon.position = screenPosition;
-
-		float distance = Vector3.Distance(
-			_cam.transform.position,
-			worldPosition
-		);
-
-		float scale = Mathf.Clamp(
-			baseSize / Mathf.Max(0.001f, distance),
-			minScale,
-			maxScale
-		);
-
-		icon.localScale = new Vector3(scale, scale, 1f);
-	}
-
-	private void SetIconVisible(bool visible)
-	{
-		if (icon != null && icon.gameObject.activeSelf != visible)
-			icon.gameObject.SetActive(visible);
+		if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+			parent,
+			screenPosition,
+			uiCamera,
+			out Vector2 localPosition))
+		{
+			iconRoot.anchoredPosition = localPosition;
+		}
 	}
 }

@@ -2,5 +2,7 @@ public enum TeamType
 {
 	Cop,
 	Robber,
-	Spectator
+	Spectator,
+	Any,
+	None
 }

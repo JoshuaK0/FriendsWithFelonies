@@ -4,6 +4,8 @@ using Evo.UI;
 
 public class ShopWindowToggle : MonoBehaviour
 {
+	public static ShopWindowToggle Instance;
+
 	public delegate void ShopEventHandler();
 
 	public event ShopEventHandler OnShopOpened;
@@ -42,9 +44,11 @@ public class ShopWindowToggle : MonoBehaviour
 		shopAudioSource.loop = true;
 		shopAudioSource.spatialBlend = 0f;
 		shopAudioSource.volume = 0f;
+
+		Instance = this;
 	}
 
-	private void Update()
+/*	private void Update()
 	{
 		if (!Input.GetKeyDown(KeyCode.Tab))
 			return;
@@ -60,9 +64,9 @@ public class ShopWindowToggle : MonoBehaviour
 		{
 			OpenShop();
 		}
-	}
+	}*/
 
-	private void OpenShop()
+	public void OpenShop()
 	{
 		shopWindow.Open();
 

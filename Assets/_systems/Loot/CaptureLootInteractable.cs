@@ -10,14 +10,19 @@ using UnityEngine;
 /// the sender-owned player object, distance, team, zone contents, loot count,
 /// round state, scoring, and despawning.
 /// </summary>
-public sealed class CaptureLootInteractable : NetworkBehaviour, IInteractable
+public sealed class CaptureLootInteractable :
+	NetworkBehaviour,
+	IInteractable
 {
 	[SerializeField]
 	private LootCaptureZone lootCaptureZone;
 
 	[Header("Interaction")]
+	[SerializeField, Min(0f)]
+	private float interactionDuration;
+
 	[SerializeField]
-	private Transform iconAnchor;
+	private bool useDirectRaycast;
 
 	[SerializeField, Min(0f)]
 	private float serverInteractionDistance = 3.5f;
@@ -25,8 +30,8 @@ public sealed class CaptureLootInteractable : NetworkBehaviour, IInteractable
 	[SerializeField]
 	private bool requireRobberTeam = true;
 
-	public Transform IconAnchor =>
-		iconAnchor != null ? iconAnchor : transform;
+	public float InteractionDuration => interactionDuration;
+	public bool UseDirectRaycast => useDirectRaycast;
 
 
 	/// <summary>

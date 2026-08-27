@@ -4,11 +4,16 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using UnityEngine;
 
-public sealed class DoorInteractable : NetworkBehaviour, IInteractable
+public sealed class DoorInteractable :
+	NetworkBehaviour,
+	IInteractable
 {
 	[Header("Interaction")]
+	[SerializeField, Min(0f)]
+	private float interactionDuration;
+
 	[SerializeField]
-	private Transform iconAnchor;
+	private bool useDirectRaycast;
 
 	[Header("Door")]
 	[SerializeField]
@@ -49,10 +54,8 @@ public sealed class DoorInteractable : NetworkBehaviour, IInteractable
 	private bool holding;
 	private bool isInitialized;
 
-	public Transform IconAnchor =>
-		iconAnchor != null
-			? iconAnchor
-			: transform;
+	public float InteractionDuration => interactionDuration;
+	public bool UseDirectRaycast => useDirectRaycast;
 
 	public override void OnStartServer()
 	{

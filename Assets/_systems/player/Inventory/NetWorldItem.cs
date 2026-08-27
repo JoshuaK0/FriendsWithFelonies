@@ -2,13 +2,16 @@ using FishNet.Object;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class NetWorldItem : NetworkBehaviour, IInteractable
+public class NetWorldItem :
+    NetworkBehaviour,
+    IInteractable
 {
     [Header("Item Data")]
     [SerializeField] private ItemDefinition itemDefinition;
 
     [Header("Interaction")]
-    [SerializeField] private Transform iconAnchor;
+    [SerializeField, Min(0f)] private float interactionDuration;
+    [SerializeField] private bool useDirectRaycast;
     [SerializeField] private UnityEvent onPickupRequested;
 
     [Header("Physics")]
@@ -21,10 +24,8 @@ public class NetWorldItem : NetworkBehaviour, IInteractable
             ? itemDefinition.LookupName
             : string.Empty;
 
-    public Transform IconAnchor =>
-        iconAnchor != null
-            ? iconAnchor
-            : transform;
+    public virtual float InteractionDuration => interactionDuration;
+    public virtual bool UseDirectRaycast => useDirectRaycast;
 
     private void Reset()
     {
