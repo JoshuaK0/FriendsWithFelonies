@@ -1,17 +1,36 @@
 using UnityEngine;
 
-public class TripwireLaser : MonoBehaviour
+public class TripwireLaser :
+    MonoBehaviour,
+    IHotbarItemContextReceiver
 {
     [SerializeField] bool updateContinuously = false;
     [SerializeField] float maxRange;
     [SerializeField] Transform wireObject;
     [SerializeField] LayerMask layerMask;
+    private bool isInitialized;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void InitializeHotbarItem(
+        NetHotbarInventory inventory,
+        int itemId)
     {
-		UpdatePosition();
+		EnsureInitialized();
+	}
 
+	private void Start()
+	{
+		// TripwireLaser is also used by the spawned world prop, which is not
+		// initialized by a hotbar inventory.
+		EnsureInitialized();
+	}
+
+	private void EnsureInitialized()
+	{
+		if (isInitialized)
+			return;
+
+		isInitialized = true;
+		UpdatePosition();
 	}
 
 	// Update is called once per frame

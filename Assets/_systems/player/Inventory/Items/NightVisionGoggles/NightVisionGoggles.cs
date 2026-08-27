@@ -42,11 +42,6 @@ public sealed class NightVisionGoggles : HotbarHeldItem
 	private GameObject screenFx;
 	private Slider slider;
 
-	private void Start()
-	{
-		ResolvePlayerOutputs();
-	}
-
 	protected override void OnContextInitialized()
 	{
 		if (Inventory == null)
@@ -55,6 +50,13 @@ public sealed class NightVisionGoggles : HotbarHeldItem
 		runtimeController =
 			Inventory.GetComponent
 				<NightVisionRuntimeController>();
+
+		if (runtimeController == null)
+		{
+			runtimeController =
+				Inventory.gameObject.AddComponent
+					<NightVisionRuntimeController>();
+		}
 
 		ResolvePlayerOutputs();
 
@@ -118,18 +120,10 @@ public sealed class NightVisionGoggles : HotbarHeldItem
 
 	private bool ResolvePlayerOutputs()
 	{
-		if (MyClient.Instance == null ||
-			MyClient.Instance.PlayerManager == null ||
-			MyClient.Instance.PlayerManager
-				.LocalPlayerController == null)
-		{
-			return false;
-		}
-
 		PlayerCharacter playerCharacter =
-			MyClient.Instance.PlayerManager
-				.LocalPlayerController
-				.GetComponent<PlayerCharacter>();
+			Inventory != null
+				? Inventory.GetComponentInParent<PlayerCharacter>()
+				: null;
 
 		if (playerCharacter == null)
 			return false;

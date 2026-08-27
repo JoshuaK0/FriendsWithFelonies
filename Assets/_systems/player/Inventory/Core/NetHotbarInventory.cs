@@ -1,8 +1,20 @@
+using System.Collections.Generic;
 using FishNet.Object;
 using UnityEngine;
 
 public class NetHotbarInventory : NetworkBehaviour
 {
+	private sealed class HeldItemInstance
+	{
+		public readonly GameObject GameObject;
+		public IUsableItem Usable;
+
+		public HeldItemInstance(GameObject gameObject)
+		{
+			GameObject = gameObject;
+		}
+	}
+
 	public static NetHotbarInventory Instance;
 
 	[Header("Item Data")]
@@ -15,11 +27,15 @@ public class NetHotbarInventory : NetworkBehaviour
 	[SerializeField] private Transform holdPoint;
 	[SerializeField] private NetHeldItemVisual heldItemVisual;
 	[SerializeField] private ItemServiceLocator itemServices;
+	[SerializeField] private CharControllerServiceLocator characterServices;
 
 	private PlayerInventory inventory;
 	private GameObject heldInstance;
 	private IUsableItem heldUsable;
 	private int heldItemId = -1;
+	private readonly Dictionary<int, HeldItemInstance> heldItems = new();
+	private GameObject heldItemsRoot;
+	private bool heldItemsInitialized;
 
 	private bool allowHeldItem = true;
 	private bool isPaused;
@@ -28,6 +44,7 @@ public class NetHotbarInventory : NetworkBehaviour
 	public int SelectedIndex => selectedIndex;
 	public ItemRegistry Registry => registry;
 	public ItemServiceLocator ItemServices => itemServices;
+	public CharControllerServiceLocator CharacterServices => characterServices;
 	public PlayerInventory Inventory => inventory;
 	public bool IsPaused => isPaused;
 
@@ -41,20 +58,27 @@ public class NetHotbarInventory : NetworkBehaviour
 
 	private void Awake()
 	{
+		ResolveServices();
+	}
+
+	private void ResolveServices()
+	{
 		if (itemServices == null)
 			itemServices = GetComponent<ItemServiceLocator>();
 
 		if (itemServices == null)
 			itemServices = GetComponentInParent<ItemServiceLocator>();
+
+		if (characterServices == null)
+			characterServices = GetComponentInParent<CharControllerServiceLocator>();
 	}
 
 	private void Reset()
 	{
 		heldItemVisual = GetComponent<NetHeldItemVisual>();
 		itemServices = GetComponent<ItemServiceLocator>();
-
-		if (itemServices == null)
-			itemServices = GetComponentInParent<ItemServiceLocator>();
+		characterServices = GetComponentInParent<CharControllerServiceLocator>();
+		ResolveServices();
 	}
 
 	public override void OnStartClient()
@@ -65,6 +89,7 @@ public class NetHotbarInventory : NetworkBehaviour
 			return;
 
 		Instance = this;
+		InitializeHeldItems();
 
 		PlayerInventory.InstanceChanged += HandleInventoryInstanceChanged;
 		BindInventory(PlayerInventory.Instance);
@@ -75,12 +100,12 @@ public class NetHotbarInventory : NetworkBehaviour
 		if (IsOwner)
 			PlayerInventory.InstanceChanged -= HandleInventoryInstanceChanged;
 
+		DestroyHeldItems();
+		ReleaseInventoryRuntime();
 		UnbindInventory();
 
 		if (Instance == this)
 			Instance = null;
-
-		ClearHeld();
 
 		base.OnStopClient();
 	}
@@ -89,12 +114,12 @@ public class NetHotbarInventory : NetworkBehaviour
 	{
 		PlayerInventory.InstanceChanged -= HandleInventoryInstanceChanged;
 
+		DestroyHeldItems();
+		ReleaseInventoryRuntime();
 		UnbindInventory();
 
 		if (Instance == this)
 			Instance = null;
-
-		ClearHeld();
 	}
 
 	private void HandleInventoryInstanceChanged(PlayerInventory newInventory)
@@ -130,6 +155,7 @@ public class NetHotbarInventory : NetworkBehaviour
 		}
 
 		inventory.OnInventoryChanged += HandleInventoryChanged;
+		InitializeHeldItems();
 
 		selectedIndex =
 			Mathf.Clamp(
@@ -322,6 +348,17 @@ public class NetHotbarInventory : NetworkBehaviour
 		RefreshHeld(true);
 	}
 
+	public void ReleaseHeldItemCache()
+	{
+		if (!IsOwner)
+			return;
+
+		allowHeldItem = false;
+		DestroyHeldItems();
+		ReleaseInventoryRuntime();
+		heldItemVisual?.SetHeldItem(-1);
+	}
+
 	private void RefreshHeld(bool force)
 	{
 		if (!IsOwner || !allowHeldItem)
@@ -347,28 +384,87 @@ public class NetHotbarInventory : NetworkBehaviour
 		if (itemId < 0 || holdPoint == null || registry == null)
 			return;
 
-		GameObject heldPrefab = registry.HeldPrefabOf(itemId);
+		InitializeHeldItems();
 
-		if (heldPrefab == null)
+		if (!heldItems.TryGetValue(itemId, out HeldItemInstance item) ||
+			item.GameObject == null)
+		{
+			return;
+		}
+
+		heldInstance = item.GameObject;
+
+		heldUsable = item.Usable;
+		heldUsable?.OnEquip();
+	}
+
+	private void InitializeHeldItems()
+	{
+		if (heldItemsInitialized)
 			return;
 
-		heldInstance = Instantiate(heldPrefab, holdPoint);
-		heldInstance.transform.localPosition = Vector3.zero;
-		heldInstance.transform.localRotation = Quaternion.identity;
+		if (registry == null || holdPoint == null)
+			return;
 
+		heldItemsInitialized = true;
+		heldItemsRoot = new GameObject("Held Items");
+		heldItemsRoot.SetActive(false);
+		heldItemsRoot.transform.SetParent(holdPoint, false);
+
+		for (int itemId = 0; itemId < registry.Count; itemId++)
+		{
+			GameObject heldPrefab = registry.HeldPrefabOf(itemId);
+
+			if (heldPrefab == null)
+				continue;
+
+			GameObject itemInstance =
+				Instantiate(
+					heldPrefab,
+					heldItemsRoot.transform,
+					false);
+
+			itemInstance.transform.localPosition = Vector3.zero;
+			itemInstance.transform.localRotation = Quaternion.identity;
+			itemInstance.SetActive(true);
+
+			heldItems.Add(
+				itemId,
+				new HeldItemInstance(itemInstance));
+		}
+
+		foreach (KeyValuePair<int, HeldItemInstance> pair in heldItems)
+			InitializeHeldItem(pair.Key, pair.Value);
+
+		// Items are activated together only after the inventory has supplied
+		// context and applied their initial unequipped presentation state.
+		heldItemsRoot.SetActive(true);
+	}
+
+	private void InitializeHeldItem(
+		int itemId,
+		HeldItemInstance item)
+	{
 		MonoBehaviour[] behaviours =
-			heldInstance.GetComponentsInChildren<MonoBehaviour>(true);
+			item.GameObject.GetComponentsInChildren<MonoBehaviour>(true);
 
 		for (int i = 0; i < behaviours.Length; i++)
 		{
-			if (behaviours[i] is IHotbarItemContextReceiver receiver)
-				receiver.InitializeHotbarItem(this, itemId);
-
-			if (heldUsable == null && behaviours[i] is IUsableItem usable)
-				heldUsable = usable;
+			if (item.Usable == null && behaviours[i] is IUsableItem usable)
+				item.Usable = usable;
 		}
 
-		heldUsable?.OnEquip();
+		for (int i = 0; i < behaviours.Length; i++)
+		{
+			if (behaviours[i] is IHotbarItemContextReceiver receiver &&
+				behaviours[i] is not IUsableItem)
+			{
+				receiver.InitializeHotbarItem(this, itemId);
+			}
+		}
+
+		if (item.Usable is IHotbarItemContextReceiver usableReceiver)
+			usableReceiver.InitializeHotbarItem(this, itemId);
 	}
 
 	private void ClearHeld()
@@ -379,13 +475,32 @@ public class NetHotbarInventory : NetworkBehaviour
 			heldUsable = null;
 		}
 
-		if (heldInstance != null)
-		{
-			Destroy(heldInstance);
-			heldInstance = null;
-		}
+		heldInstance = null;
 
 		heldItemId = -1;
+	}
+
+	private void DestroyHeldItems()
+	{
+		ClearHeld();
+
+		if (heldItemsRoot != null)
+			Destroy(heldItemsRoot);
+
+		heldItems.Clear();
+		heldItemsRoot = null;
+		heldItemsInitialized = false;
+	}
+
+	private void ReleaseInventoryRuntime()
+	{
+		MonoBehaviour[] behaviours = GetComponents<MonoBehaviour>();
+
+		for (int i = 0; i < behaviours.Length; i++)
+		{
+			if (behaviours[i] is IInventoryReleaseHandler handler)
+				handler.OnInventoryReleased();
+		}
 	}
 
 	public GameObject GetCurrentItemGameObject()

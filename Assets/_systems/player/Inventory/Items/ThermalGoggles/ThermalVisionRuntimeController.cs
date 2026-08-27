@@ -6,10 +6,11 @@ using UnityEngine.UI;
 /// Persistent owner-local thermal-vision state.
 ///
 /// This component is added to the player's inventory at runtime. It continues
-/// updating while the thermal goggles are unequipped or their held prefab has
-/// been destroyed and rebuilt.
+/// updating while the thermal goggles are unequipped.
 /// </summary>
-public sealed class ThermalVisionRuntimeController : MonoBehaviour
+public sealed class ThermalVisionRuntimeController :
+	MonoBehaviour,
+	IInventoryReleaseHandler
 {
 	private const string DurationKey =
 		"thermal_duration";
@@ -39,6 +40,7 @@ public sealed class ThermalVisionRuntimeController : MonoBehaviour
 	private bool initialFeatureState;
 	private bool initialFeatureStateCaptured;
 	private bool warnedAboutMissingFeature;
+	private bool isReleased;
 
 	public bool IsOn => isOn;
 	public float CurrentDuration => currentDuration;
@@ -53,6 +55,7 @@ public sealed class ThermalVisionRuntimeController : MonoBehaviour
 		GameObject configuredScreenFx,
 		Slider configuredSlider)
 	{
+		isReleased = false;
 		itemId = configuredItemId;
 		runtimeState = configuredRuntimeState;
 		rendererData = configuredRendererData;
@@ -366,19 +369,32 @@ public sealed class ThermalVisionRuntimeController : MonoBehaviour
 		);
 	}
 
-	private void OnDestroy()
+	public void OnInventoryReleased()
 	{
-		SaveState();
+		if (isReleased)
+			return;
 
-		if (renderFeature != null &&
-			initialFeatureStateCaptured)
+		isReleased = true;
+		isOn = false;
+
+		if (renderFeature != null)
 		{
 			renderFeature.SetActive(
-				initialFeatureState
-			);
+				initialFeatureStateCaptured &&
+				initialFeatureState);
 		}
 
 		if (screenFx != null)
 			screenFx.SetActive(false);
+
+		if (slider != null)
+			slider.gameObject.SetActive(false);
+
+		SaveState();
+	}
+
+	private void OnDestroy()
+	{
+		OnInventoryReleased();
 	}
 }

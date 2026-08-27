@@ -15,16 +15,11 @@ public sealed class TripWireItem : HotbarHeldItem
 
     private TripWireItemNetworked networkedCounterpart;
 
-	void Start()
-	{
-		rayOrigin = MyClient.Instance.PlayerManager
-		.LocalPlayerController
-		.GetComponent<CharControllerServiceLocator>()
-		.muzzle;
-	}
-
 	protected override void OnContextInitialized()
     {
+		if (CharacterServices != null)
+			rayOrigin = CharacterServices.muzzle;
+
         networkedCounterpart = ItemServices != null ? ItemServices.GetNetworkedTripWire() : null;
     }
 

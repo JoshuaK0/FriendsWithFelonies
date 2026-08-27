@@ -12,6 +12,8 @@ public sealed class BulletProjectile : MonoBehaviour
 	[SerializeField, Min(0f)]
 	private float lifetime = 3f;
 
+	[SerializeField] bool colliderWithTriggers = false;
+
 	private void Awake()
 	{
 		if (projectileRigidbody == null)
@@ -43,6 +45,11 @@ public sealed class BulletProjectile : MonoBehaviour
 	private void OnTriggerEnter(
 		Collider other)
 	{
-		Destroy(gameObject);
-	}
+		if(colliderWithTriggers || !other.isTrigger)
+		{
+            projectileRigidbody.isKinematic = true;
+            projectileRigidbody.angularVelocity = Vector3.zero;
+            projectileRigidbody.linearVelocity = Vector3.zero;
+        }
+    }
 }

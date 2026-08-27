@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// Owner-local thermal vision input and configuration.
 ///
 /// The persistent runtime controller is attached to the inventory, so thermal
-/// vision and its battery continue to work when the held prefab is rebuilt.
+/// vision and its battery continue to work while the held prefab is unequipped.
 /// Renderer features are local to the running client and do not require
 /// FishNet replication.
 /// </summary>
@@ -36,11 +36,6 @@ public sealed class ThermalGoggles : HotbarHeldItem
 	private ThermalVisionRuntimeController runtimeController;
 	private GameObject screenFx;
 	private Slider slider;
-
-	private void Start()
-	{
-		ResolvePlayerOutputs();
-	}
 
 	protected override void OnContextInitialized()
 	{
@@ -112,18 +107,10 @@ public sealed class ThermalGoggles : HotbarHeldItem
 
 	private bool ResolvePlayerOutputs()
 	{
-		if (MyClient.Instance == null ||
-			MyClient.Instance.PlayerManager == null ||
-			MyClient.Instance.PlayerManager
-				.LocalPlayerController == null)
-		{
-			return false;
-		}
-
 		PlayerCharacter playerCharacter =
-			MyClient.Instance.PlayerManager
-				.LocalPlayerController
-				.GetComponent<PlayerCharacter>();
+			Inventory != null
+				? Inventory.GetComponentInParent<PlayerCharacter>()
+				: null;
 
 		if (playerCharacter == null)
 			return false;

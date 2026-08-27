@@ -36,6 +36,9 @@ public class PlayerCharacter : NetworkBehaviour
 	[SerializeField]
 	private CharControllerServiceLocator charControllerServiceLocator;
 
+	[SerializeField]
+	private PlayerInteractor playerInteractor;
+
 	[SerializeField] NetworkRagdollManager ragdollManager;
 
 	[SerializeField] NetHotbarInventory inventory;
@@ -65,6 +68,10 @@ public class PlayerCharacter : NetworkBehaviour
 	{
 		if (healthManager == null)
 			healthManager = GetComponent<HealthManager>();
+
+		if (playerInteractor == null)
+			playerInteractor =
+				GetComponentInChildren<PlayerInteractor>(true);
 	}
 
 	public override void OnStartServer()
@@ -160,7 +167,7 @@ public class PlayerCharacter : NetworkBehaviour
 			obj.SetActive(false);
 		}
 
-		inventory?.UnequipCurrentItem();
+		inventory?.ReleaseHeldItemCache();
 
 		inventoryObject.SetActive(false);
 	}
@@ -187,12 +194,20 @@ public class PlayerCharacter : NetworkBehaviour
 		if(paused)
 		{
 			inventory.SetPaused(true);
+
+			if (playerInteractor != null)
+				playerInteractor.enabled = false;
+
 			mouseLook.enabled = false;
 			playerMovement.enabled = false;
 		}
 		else
 		{
 			inventory.SetPaused(false);
+
+			if (playerInteractor != null)
+				playerInteractor.enabled = true;
+
 			mouseLook.enabled = true;
 			playerMovement.enabled = true;
 		}

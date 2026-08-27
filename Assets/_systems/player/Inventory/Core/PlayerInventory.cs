@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [DefaultExecutionOrder(-1000)]
@@ -30,6 +32,8 @@ public sealed class PlayerInventory : MonoBehaviour
 	[SerializeField] private StartingInventorySlot[] startingSlots;
 
 	private HotbarSlot[] slots;
+	private readonly HashSet<int> discoveredItemIds = new();
+	private PlayerManager subscribedPlayerManager;
 
 	public int SlotCount
 	{
@@ -57,8 +61,21 @@ public sealed class PlayerInventory : MonoBehaviour
 		InstanceChanged?.Invoke(this);
 	}
 
+	private IEnumerator Start()
+	{
+		yield return new WaitUntil(() => PlayerManager.Instance != null);
+
+		subscribedPlayerManager = PlayerManager.Instance;
+		subscribedPlayerManager.OnLocalPlayerSpawned +=
+			HandleLocalPlayerSpawned;
+	}
+
 	private void OnDestroy()
 	{
+		if (subscribedPlayerManager != null)
+			subscribedPlayerManager.OnLocalPlayerSpawned -=
+				HandleLocalPlayerSpawned;
+
 		if (Instance != this)
 			return;
 
@@ -130,6 +147,20 @@ public sealed class PlayerInventory : MonoBehaviour
 
 			slots[i].itemId = itemId;
 			slots[i].count = count;
+			discoveredItemIds.Add(itemId);
+		}
+	}
+
+	private void HandleLocalPlayerSpawned(GameObject controller)
+	{
+		if (registry == null)
+			return;
+
+		int stickyBombId = registry.GetItemId("stickybomb");
+		if (registry.IsValidItemId(stickyBombId) &&
+			discoveredItemIds.Contains(stickyBombId))
+		{
+			RediscoverItem(stickyBombId, registry);
 		}
 	}
 
@@ -209,6 +240,12 @@ public sealed class PlayerInventory : MonoBehaviour
 		return -1;
 	}
 
+	private bool CanCreateAdditionalStack(int itemId, ItemRegistry registry)
+	{
+		return registry.AllowsMultipleStacks(itemId) ||
+			!ContainsItem(itemId);
+	}
+
 	public bool WouldAcceptPickup(int itemId, ItemRegistry registry, int replacementIndex)
 	{
 		EnsureInitialized();
@@ -216,7 +253,13 @@ public sealed class PlayerInventory : MonoBehaviour
 		if (registry == null || !registry.IsValidItemId(itemId))
 			return false;
 
-		if (FindStackableSlot(itemId, registry) >= 0 || FindEmptySlot() >= 0)
+		if (FindStackableSlot(itemId, registry) >= 0)
+			return true;
+
+		if (!CanCreateAdditionalStack(itemId, registry))
+			return false;
+
+		if (FindEmptySlot() >= 0)
 			return true;
 
 		if (!IsValidSlot(replacementIndex))
@@ -254,9 +297,13 @@ public sealed class PlayerInventory : MonoBehaviour
 		if (targetIndex >= 0)
 		{
 			slots[targetIndex].count++;
+			discoveredItemIds.Add(itemId);
 			NotifySlotChanged(targetIndex);
 			return true;
 		}
+
+		if (!CanCreateAdditionalStack(itemId, registry))
+			return false;
 
 		targetIndex = FindEmptySlot();
 
@@ -264,6 +311,7 @@ public sealed class PlayerInventory : MonoBehaviour
 		{
 			slots[targetIndex].itemId = itemId;
 			slots[targetIndex].count = 1;
+			discoveredItemIds.Add(itemId);
 			NotifySlotChanged(targetIndex);
 			return true;
 		}
@@ -286,8 +334,40 @@ public sealed class PlayerInventory : MonoBehaviour
 
 		replacement.itemId = itemId;
 		replacement.count = 1;
+		discoveredItemIds.Add(itemId);
 
 		NotifySlotChanged(replacementIndex);
+		return true;
+	}
+
+	public bool RediscoverItem(int itemId, ItemRegistry itemRegistry)
+	{
+		EnsureInitialized();
+
+		if (itemRegistry == null || !itemRegistry.IsValidItemId(itemId))
+			return false;
+
+		if (GetItemCount(itemId) > 0)
+			return true;
+
+		int targetIndex = FindStackableSlot(itemId, itemRegistry);
+		if (targetIndex < 0)
+			targetIndex = FindEmptySlot();
+
+		if (targetIndex < 0)
+			return false;
+
+		HotbarSlot slot = slots[targetIndex];
+		if (slot.itemId == itemId)
+			slot.count = Mathf.Max(1, slot.count);
+		else
+		{
+			slot.itemId = itemId;
+			slot.count = 1;
+		}
+
+		discoveredItemIds.Add(itemId);
+		NotifySlotChanged(targetIndex);
 		return true;
 	}
 

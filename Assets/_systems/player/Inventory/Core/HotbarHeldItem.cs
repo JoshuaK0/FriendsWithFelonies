@@ -8,7 +8,9 @@ public abstract class HotbarHeldItem :
 	protected NetHotbarInventory Inventory { get; private set; }
 	protected HotbarItemRuntimeStateStore RuntimeState { get; private set; }
 	protected ItemServiceLocator ItemServices { get; private set; }
+	protected CharControllerServiceLocator CharacterServices { get; private set; }
 	protected int ItemId { get; private set; } = -1;
+	protected bool IsInitialized { get; private set; }
 	protected bool IsEquipped { get; private set; }
 
 	protected bool IsCurrentPlayerItem =>
@@ -19,8 +21,12 @@ public abstract class HotbarHeldItem :
 		NetHotbarInventory inventory,
 		int itemId)
 	{
+		if (IsInitialized)
+			return;
+
 		Inventory = inventory;
 		ItemServices = inventory != null ? inventory.ItemServices : null;
+		CharacterServices = inventory != null ? inventory.CharacterServices : null;
 		ItemId = itemId;
 
 		if (inventory != null)
@@ -37,11 +43,17 @@ public abstract class HotbarHeldItem :
 		}
 
 		OnContextInitialized();
+		IsInitialized = true;
+
+		// The item root remains active for its entire inventory lifetime.
+		// Item behaviour owns which viewmodels, previews, UI, or effects are
+		// hidden while the item starts unequipped.
+		OnUnequipped();
 	}
 
 	public void OnEquip()
 	{
-		if (IsEquipped)
+		if (!IsInitialized || IsEquipped)
 			return;
 
 		IsEquipped = true;

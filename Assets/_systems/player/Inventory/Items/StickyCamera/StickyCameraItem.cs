@@ -32,16 +32,11 @@ public sealed class StickyCameraItem : HotbarHeldItem
 
     private StickyCameraItemNetworked networkedCounterpart;
 
-    void Start()
-    {
-		rayOrigin = MyClient.Instance.PlayerManager
-		.LocalPlayerController
-		.GetComponent<CharControllerServiceLocator>()
-		.muzzle;
-	}
-
     protected override void OnContextInitialized()
     {
+        if (CharacterServices != null)
+            rayOrigin = CharacterServices.muzzle;
+
         networkedCounterpart =
             ItemServices != null
                 ? ItemServices.GetNetworkedStickyCamera()
@@ -54,7 +49,9 @@ public sealed class StickyCameraItem : HotbarHeldItem
                 surveyCamera.GetComponent<StickyCameraManualUpdate>();
         }
 
-        // Keep the survey rig alive when the held item prefab is rebuilt.
+        // This rig is positioned at the selected world camera. Keeping it
+        // under the held-item/hold-point hierarchy would make it inherit the
+        // player's movement after the item is minimized or unequipped.
         if (surveyingObject != null &&
             surveyingObject.transform.IsChildOf(transform))
         {
@@ -65,6 +62,15 @@ public sealed class StickyCameraItem : HotbarHeldItem
     protected override void OnEquipped()
     {
         StickyCameraManager.Instance?.RefreshCameras();
+
+        if (isMinimized)
+        {
+            ConfigureSurveyCamera(true);
+            SetPlacementVisuals(false);
+            preview?.SetVisible(false);
+            SetSurveyRigActive(true);
+            return;
+        }
 
         SetPlacementVisuals(true);
         preview?.SetVisible(true);
@@ -114,10 +120,32 @@ public sealed class StickyCameraItem : HotbarHeldItem
 
     protected override void OnUnequipped()
     {
-        ExitSurveyMode();
+        // CamLook has its own Update loop, separate from HotbarHeldItem.
+        // Pause it explicitly whenever this item loses selection.
+        surveyCamLook?.SetPaused(true);
+
+        // A minimized feed is intentionally independent from which hotbar
+        // item is selected. Its survey rig and manual renderer remain live
+        // until the player closes it or this held-item cache is released.
+        if (!isMinimized)
+            ExitSurveyMode();
 
         preview?.SetVisible(false);
         SetPlacementVisuals(false);
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        if (isSurveying ||
+            isMinimized)
+        {
+            ExitSurveyMode();
+        }
+
+        if (surveyingObject != null)
+            Destroy(surveyingObject);
     }
 
     private void UpdatePlacementMode()
@@ -425,9 +453,4 @@ public sealed class StickyCameraItem : HotbarHeldItem
             surveyingObject.SetActive(enabled);
     }
 
-    private void OnDestroy()
-    {
-        if (surveyingObject != null)
-            Destroy(surveyingObject);
-    }
 }

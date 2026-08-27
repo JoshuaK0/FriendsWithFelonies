@@ -28,13 +28,6 @@ public sealed class StickyBombItem : HotbarHeldItem
     private StickyBombItemNetworked networkedCounterpart;
     private bool waitingForFinalThrownBomb;
 
-	void Start()
-	{
-		muzzle = MyClient.Instance.PlayerManager
-		.LocalPlayerController
-		.GetComponent<CharControllerServiceLocator>()
-		.muzzle;
-	}
 	private int CurrentCount
     {
         get
@@ -54,15 +47,17 @@ public sealed class StickyBombItem : HotbarHeldItem
 
     protected override void OnContextInitialized()
     {
+        if (CharacterServices != null)
+        {
+            muzzle = CharacterServices.muzzle;
+            playerCamera = CharacterServices.PlayerCamera != null
+                ? CharacterServices.PlayerCamera.GetComponent<Camera>()
+                : null;
+        }
+
         networkedCounterpart = ItemServices != null
             ? ItemServices.GetNetworkedStickyBomb()
             : null;
-
-        playerCamera = MyClient.Instance.PlayerManager.LocalPlayerController
-            .GetComponent<PlayerCharacter>()
-            .GetServiceLocator()
-            .PlayerCamera
-            .GetComponent<Camera>();
     }
 
     protected override void OnEquipped()

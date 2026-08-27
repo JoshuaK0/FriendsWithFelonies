@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Owner-local runtime state for held prefabs which are destroyed whenever the
-/// selected slot changes. This is presentation/gameplay convenience state only;
+/// Owner-local runtime state shared by held items and inventory-level runtime
+/// controllers. This is presentation/gameplay convenience state only;
 /// authoritative item state must still live on the server.
 /// </summary>
 public sealed class HotbarItemRuntimeStateStore : MonoBehaviour

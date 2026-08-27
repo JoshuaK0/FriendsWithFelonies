@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public sealed class CamLook : MonoBehaviour
+public sealed class CamLook :
+    MonoBehaviour,
+    IHotbarItemContextReceiver
 {
     [Header("References")]
     [FormerlySerializedAs("xPivot")]
@@ -20,13 +22,25 @@ public sealed class CamLook : MonoBehaviour
     private bool isPaused;
     private bool hasBaseRotation;
     private Quaternion baseRotation = Quaternion.identity;
+    private bool isInitialized;
 
     public Vector2 LookDir { get => lookDir; set => SetLookDir(value); }
     public Vector2 LookDirection { get => lookDir; set => SetLookDir(value); }
     public bool IsPaused => isPaused;
 
-    private void Awake()
+    public void InitializeHotbarItem(
+        NetHotbarInventory inventory,
+        int itemId)
     {
+        EnsureInitialized();
+    }
+
+    private void EnsureInitialized()
+    {
+        if (isInitialized)
+            return;
+
+        isInitialized = true;
         RefreshSensitivity();
     }
 
@@ -38,6 +52,8 @@ public sealed class CamLook : MonoBehaviour
 
     public void Look()
     {
+        EnsureInitialized();
+
         lookDir.y += Input.GetAxis("Mouse X") * lookSpeed * Time.deltaTime;
         lookDir.x -= Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
         ClampAndNormalize();

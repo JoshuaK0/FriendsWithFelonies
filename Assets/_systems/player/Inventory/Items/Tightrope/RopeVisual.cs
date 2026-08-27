@@ -1,7 +1,9 @@
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
-public sealed class RopeVisual : MonoBehaviour
+public sealed class RopeVisual :
+    MonoBehaviour,
+    IHotbarItemContextReceiver
 {
     [SerializeField, Min(1)] private int quality = 20;
     [SerializeField] private float damper = 14f;
@@ -19,15 +21,28 @@ public sealed class RopeVisual : MonoBehaviour
     private Vector3 targetPosition;
     private Vector3 currentPosition;
     private bool drawRope;
+    private bool isInitialized;
 
-    private void Awake()
+    public void InitializeHotbarItem(
+        NetHotbarInventory inventory,
+        int itemId)
     {
+        EnsureInitialized();
+    }
+
+    private void EnsureInitialized()
+    {
+        if (isInitialized)
+            return;
+
+        isInitialized = true;
         lineRenderer = GetComponent<LineRenderer>();
         spring.SetTarget(0f);
     }
 
     private void LateUpdate()
     {
+        EnsureInitialized();
         DrawRope();
     }
 

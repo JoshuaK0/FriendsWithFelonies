@@ -48,6 +48,14 @@ public sealed class PlayerInteractor : MonoBehaviour
 		colliderBuffer = new Collider[Mathf.Max(4, maxColliders)];
 	}
 
+	private void OnEnable()
+	{
+		// Input may have been released while this component was disabled
+		// (for example, while the player was paused). Re-sync the guard so
+		// the next interaction is not accidentally swallowed.
+		waitForKeyRelease = Input.GetKey(interactKey);
+	}
+
 	private void Update()
 	{
 		IInteractable previous = current;

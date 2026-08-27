@@ -3,7 +3,9 @@ using UnityEngine;
 /// <summary>
 /// Shared local-only placement preview. The overlap test ignores colliders that belong to the preview itself.
 /// </summary>
-public sealed class PlacementPreview : MonoBehaviour
+public sealed class PlacementPreview :
+    MonoBehaviour,
+    IHotbarItemContextReceiver
 {
     [SerializeField] private GameObject indicator;
     [SerializeField] private MeshRenderer[] renderers;
@@ -14,11 +16,23 @@ public sealed class PlacementPreview : MonoBehaviour
     [SerializeField, Min(4)] private int maxOverlaps = 32;
 
     private Collider[] overlapBuffer;
+    private bool isInitialized;
 
     public Transform IndicatorTransform => indicator != null ? indicator.transform : transform;
 
-    private void Awake()
+    public void InitializeHotbarItem(
+        NetHotbarInventory inventory,
+        int itemId)
     {
+        EnsureInitialized();
+    }
+
+    private void EnsureInitialized()
+    {
+        if (isInitialized)
+            return;
+
+        isInitialized = true;
         overlapBuffer = new Collider[Mathf.Max(4, maxOverlaps)];
         SetVisible(false);
     }
@@ -37,6 +51,8 @@ public sealed class PlacementPreview : MonoBehaviour
 
     public bool EvaluateClear(bool additionalCondition = true)
     {
+        EnsureInitialized();
+
         Transform target = IndicatorTransform;
         int count = Physics.OverlapBoxNonAlloc(
             target.position,

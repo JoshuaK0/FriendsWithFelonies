@@ -22,6 +22,8 @@ public class BuyItemButtonCreator : MonoBehaviour
 	[SerializeField]
 	ShopWindowToggle shopWindowToggle;
 
+	private bool isShopOpen;
+
 	[System.Serializable]
 	public class ItemPurchasedEvent :
 		UnityEvent<int, ItemDefinition>
@@ -30,12 +32,50 @@ public class BuyItemButtonCreator : MonoBehaviour
 
 	private void Awake()
 	{
-		shopWindowToggle.OnShopOpened += CreateButtons;
+		if (shopWindowToggle != null)
+		{
+			shopWindowToggle.OnShopOpened += HandleShopOpened;
+			shopWindowToggle.OnShopClosed += HandleShopClosed;
+		}
+
+		PlayerTeams.OnTeamDataChanged += HandleTeamDataChanged;
+	}
+
+	private void OnDestroy()
+	{
+		if (shopWindowToggle != null)
+		{
+			shopWindowToggle.OnShopOpened -= HandleShopOpened;
+			shopWindowToggle.OnShopClosed -= HandleShopClosed;
+		}
+
+		PlayerTeams.OnTeamDataChanged -= HandleTeamDataChanged;
+	}
+
+	private void HandleShopOpened()
+	{
+		isShopOpen = true;
+		CreateButtons();
+	}
+
+	private void HandleShopClosed()
+	{
+		isShopOpen = false;
+		ClearButtons();
+	}
+
+	private void HandleTeamDataChanged()
+	{
+		if (isShopOpen)
+			CreateButtons();
 	}
 
 	public void CreateButtons()
 	{
 		ClearButtons();
+
+		if (!TryGetLocalTeamType(out TeamType teamType))
+			return;
 
 		if (itemRegistry == null)
 		{
@@ -86,6 +126,9 @@ public class BuyItemButtonCreator : MonoBehaviour
 			if (!item.IsPurchasable)
 				continue;
 
+			if (!item.IsAvailableInShopFor(teamType))
+				continue;
+
 			BuyItemButton button =
 				Instantiate(
 					buttonPrefab,
@@ -98,6 +141,24 @@ public class BuyItemButtonCreator : MonoBehaviour
 				hotbarPickup,
 				HandleItemPurchased);
 		}
+	}
+
+	private static bool TryGetLocalTeamType(out TeamType teamType)
+	{
+		teamType = TeamType.Spectator;
+
+		if (MyClient.Instance == null ||
+			PlayerTeams.Instance == null)
+		{
+			return false;
+		}
+
+		teamType =
+			PlayerTeams.Instance.GetPlayerTeamType(
+				MyClient.Instance.Owner.ClientId);
+
+		return teamType == TeamType.Cop ||
+			teamType == TeamType.Robber;
 	}
 
 	private void HandleItemPurchased(

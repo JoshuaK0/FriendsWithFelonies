@@ -11,16 +11,11 @@ public sealed class LadderItem : HotbarHeldItem
 
     private LadderItemNetworked networkedCounterpart;
 
-	void Start()
-	{
-		rayOrigin = MyClient.Instance.PlayerManager
-		.LocalPlayerController
-		.GetComponent<CharControllerServiceLocator>()
-		.muzzle;
-	}
-
 	protected override void OnContextInitialized()
     {
+		if (CharacterServices != null)
+			rayOrigin = CharacterServices.muzzle;
+
         networkedCounterpart = ItemServices != null ? ItemServices.GetNetworkedLadder() : null;
     }
 

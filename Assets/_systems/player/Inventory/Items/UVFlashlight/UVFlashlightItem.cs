@@ -13,11 +13,11 @@ public sealed class UVFlashlightItem : HotbarHeldItem
     protected override void OnContextInitialized()
     {
         networkedCounterpart = ItemServices != null ? ItemServices.GetNetworkedUVFlashlight() : null;
+        enabledState = startsEnabled;
     }
 
     protected override void OnEquipped()
     {
-        enabledState = startsEnabled;
         ApplyLocalState();
         networkedCounterpart?.RequestSetUVFlashlight(enabledState);
     }
@@ -38,8 +38,16 @@ public sealed class UVFlashlightItem : HotbarHeldItem
 
     protected override void OnUnequipped()
     {
-        enabledState = false;
         ApplyLocalState();
+        networkedCounterpart?.RequestSetUVFlashlight(enabledState);
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        // Switching slots preserves the UV light. Only destroy-time cleanup
+        // clears the networked counterpart.
         networkedCounterpart?.RequestSetUVFlashlight(false);
     }
 

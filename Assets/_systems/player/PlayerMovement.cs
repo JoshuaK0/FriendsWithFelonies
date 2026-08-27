@@ -1,6 +1,7 @@
 // PlayerMovement version: sprint gate delay + smoothing + stance clearance + crouch-to-run + air control
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
@@ -37,6 +38,22 @@ public class PlayerMovement : MonoBehaviour
 
 	[Tooltip("How long the player must remain below the sprint speed gate before sprint is cancelled.")]
 	[SerializeField, Min(0f)] private float sprintLowSpeedExitDelay = 0.25f;
+
+	[Header("Sprint Stamina")]
+	[Tooltip("Total stamina available when fully rested.")]
+	[SerializeField, Min(0.01f)] private float maximumStamina = 5f;
+
+	[Tooltip("Stamina consumed per second while sprinting.")]
+	[SerializeField, Min(0f)] private float staminaDrainPerSecond = 1f;
+
+	[Tooltip("Stamina recovered per second after the recovery delay.")]
+	[SerializeField, Min(0f)] private float staminaRecoveryPerSecond = 1.25f;
+
+	[Tooltip("Delay after sprinting stops before stamina begins recovering.")]
+	[SerializeField, Min(0f)] private float staminaRecoveryDelay = 1.5f;
+
+	[Tooltip("Optional UI slider that displays the current stamina.")]
+	[SerializeField] private Slider staminaBar;
 
 	[Header("Sprint FOV")]
 	[SerializeField] private Camera playerCamera;
@@ -133,8 +150,8 @@ public class PlayerMovement : MonoBehaviour
 	private bool crouchRunTransitionThisFrame;
 
 	/*
-	 * When hold-to-sprint is enabled and sprint is cancelled
-	 * because forward velocity fell too low while decelerating,
+	 * When hold-to-sprint is enabled and sprint is automatically
+	 * cancelled,
 	 * require the sprint key to be released before sprint can
 	 * be requested again.
 	 */
@@ -160,15 +177,20 @@ public class PlayerMovement : MonoBehaviour
 	 */
 	private bool sprintLowSpeedTimerActive;
 
+	private float currentStamina;
+
+	private float staminaRecoveryTimer;
+
 	private Ladder currentLadder;
 
 	private bool isClimbing;
 
 	/*
-	 * Prevents immediately grabbing the same ladder again
-	 * after deliberately leaving it.
+	 * Prevents immediately grabbing the ladder that was
+	 * deliberately exited. Other ladders must remain available
+	 * so adjacent ladders can be climbed without releasing input.
 	 */
-	private bool ladderReentryBlocked;
+	private Ladder reentryBlockedLadder;
 
 	/*
 	 * We keep track of whether the player is physically
@@ -192,6 +214,8 @@ public class PlayerMovement : MonoBehaviour
 	public bool IsSprinting => isSprinting;
 	public bool IsCrouching => isCrouching;
 	public bool IsClimbing => isClimbing;
+	public float CurrentStamina => currentStamina;
+	public float MaximumStamina => GetMaximumStamina();
 
 	public bool IsGrounded =>
 		characterController != null &&
@@ -232,6 +256,11 @@ public class PlayerMovement : MonoBehaviour
 			playerCamera.fieldOfView =
 				normalFov;
 		}
+
+		currentStamina =
+			GetMaximumStamina();
+
+		UpdateStaminaBar();
 	}
 
 	private void OnDisable()
@@ -251,6 +280,7 @@ public class PlayerMovement : MonoBehaviour
 		if (isClimbing)
 		{
 			HandleLadderMovement();
+			UpdateSprintStamina();
 
 			HandleCrouchTransition();
 			HandleCameraFov();
@@ -325,10 +355,8 @@ public class PlayerMovement : MonoBehaviour
 	private void HandleSprintInput()
 	{
 		/*
-		 * If sprint was automatically cancelled because the
-		 * player decelerated below the minimum sprint velocity,
-		 * hold-to-sprint requires a release before it can be
-		 * requested again.
+		 * If sprint was automatically cancelled, hold-to-sprint
+		 * requires a release before it can be requested again.
 		 */
 		if (!toggleSprint &&
 			sprintBlockedUntilRelease)
@@ -342,6 +370,19 @@ public class PlayerMovement : MonoBehaviour
 				sprintRequested = false;
 				return;
 			}
+		}
+
+		if (!HasSprintStamina())
+		{
+			sprintRequested = false;
+
+			if (!toggleSprint &&
+				Input.GetKey(sprintKey))
+			{
+				sprintBlockedUntilRelease = true;
+			}
+
+			return;
 		}
 
 		if (toggleSprint)
@@ -716,6 +757,7 @@ public class PlayerMovement : MonoBehaviour
 
 		bool canSprint =
 			sprintRequested &&
+			HasSprintStamina() &&
 			!isCrouching &&
 			(
 				(vertical > 0f &&
@@ -725,6 +767,8 @@ public class PlayerMovement : MonoBehaviour
 
 		isSprinting =
 			canSprint;
+
+		UpdateSprintStamina();
 
 		isWalking =
 			walkRequested &&
@@ -836,6 +880,108 @@ public class PlayerMovement : MonoBehaviour
 	}
 
 	// --------------------------------------------------
+	// SPRINT STAMINA
+	// --------------------------------------------------
+
+	private bool HasSprintStamina()
+	{
+		return currentStamina >
+			Mathf.Epsilon;
+	}
+
+	private float GetMaximumStamina()
+	{
+		return Mathf.Max(
+			0.01f,
+			maximumStamina);
+	}
+
+	private void UpdateSprintStamina()
+	{
+		float maximum =
+			GetMaximumStamina();
+
+		currentStamina =
+			Mathf.Clamp(
+				currentStamina,
+				0f,
+				maximum);
+
+		if (isSprinting)
+		{
+			staminaRecoveryTimer = 0f;
+
+			currentStamina =
+				Mathf.Max(
+					0f,
+					currentStamina -
+					Mathf.Max(
+						0f,
+						staminaDrainPerSecond) *
+					Time.deltaTime);
+
+			if (!HasSprintStamina())
+			{
+				currentStamina = 0f;
+				isSprinting = false;
+				sprintRequested = false;
+				sprintLowSpeedTimer = 0f;
+				sprintLowSpeedTimerActive = false;
+
+				if (!toggleSprint &&
+					Input.GetKey(sprintKey))
+				{
+					sprintBlockedUntilRelease = true;
+				}
+			}
+		}
+		else
+		{
+			staminaRecoveryTimer +=
+				Time.deltaTime;
+
+			if (staminaRecoveryTimer >=
+				Mathf.Max(0f, staminaRecoveryDelay))
+			{
+				currentStamina =
+					Mathf.MoveTowards(
+						currentStamina,
+						maximum,
+						Mathf.Max(
+							0f,
+							staminaRecoveryPerSecond) *
+						Time.deltaTime);
+			}
+		}
+
+		UpdateStaminaBar();
+	}
+
+	private void UpdateStaminaBar()
+	{
+		if (staminaBar == null)
+		{
+			return;
+		}
+
+		float maximum =
+			GetMaximumStamina();
+
+		bool isFull =
+			currentStamina >=
+			maximum - Mathf.Epsilon;
+
+		staminaBar.gameObject.SetActive(
+			!isFull);
+
+		staminaBar.minValue = 0f;
+		staminaBar.maxValue = 1f;
+		staminaBar.value =
+			currentStamina /
+			maximum;
+	}
+
+	// --------------------------------------------------
 	// JUMP / GRAVITY
 	// --------------------------------------------------
 
@@ -888,7 +1034,7 @@ public class PlayerMovement : MonoBehaviour
 		if (currentLadder == null)
 		{
 			isClimbing = false;
-			ladderReentryBlocked = false;
+			reentryBlockedLadder = null;
 
 			return;
 		}
@@ -904,7 +1050,7 @@ public class PlayerMovement : MonoBehaviour
 			return;
 		}
 
-		if (ladderReentryBlocked)
+		if (currentLadder == reentryBlockedLadder)
 		{
 			return;
 		}
@@ -1270,9 +1416,14 @@ public class PlayerMovement : MonoBehaviour
 
 	private void CompleteTopPlatformExit()
 	{
+		if (TryTransferToOverlappingLadder())
+		{
+			return;
+		}
+
 		isClimbing = false;
 
-		ladderReentryBlocked = true;
+		reentryBlockedLadder = currentLadder;
 
 		/*
 		 * Give gravity a tiny downward amount so the
@@ -1291,7 +1442,7 @@ public class PlayerMovement : MonoBehaviour
 		if (!insideCurrentLadderTrigger)
 		{
 			currentLadder = null;
-			ladderReentryBlocked = false;
+			reentryBlockedLadder = null;
 		}
 	}
 
@@ -1431,7 +1582,8 @@ public class PlayerMovement : MonoBehaviour
 		 * or crouching.
 		 */
 		if (!TryExitLadder(
-			exitPosition))
+			exitPosition,
+			false))
 		{
 			return;
 		}
@@ -1455,7 +1607,8 @@ public class PlayerMovement : MonoBehaviour
 	// --------------------------------------------------
 
 	private bool TryExitLadder(
-		Vector3 exitPosition)
+		Vector3 exitPosition,
+		bool allowLadderHandoff = true)
 	{
 		/*
 		 * Try standing first.
@@ -1470,7 +1623,8 @@ public class PlayerMovement : MonoBehaviour
 			forcedCrouch = false;
 
 			CompleteLadderExit(
-				exitPosition);
+				exitPosition,
+				allowLadderHandoff);
 
 			return true;
 		}
@@ -1489,7 +1643,8 @@ public class PlayerMovement : MonoBehaviour
 			forcedCrouch = true;
 
 			CompleteLadderExit(
-				exitPosition);
+				exitPosition,
+				allowLadderHandoff);
 
 			return true;
 		}
@@ -1503,29 +1658,155 @@ public class PlayerMovement : MonoBehaviour
 	}
 
 	private void CompleteLadderExit(
-		Vector3 exitPosition)
+		Vector3 exitPosition,
+		bool allowLadderHandoff)
 	{
+		Ladder exitedLadder = currentLadder;
+
+		Vector3 displacement =
+			exitPosition -
+			transform.position;
+
+		/*
+		 * A jump is an intentional detach. Make it non-climbing
+		 * before moving so a ladder entered by the jump can be
+		 * selected normally on a later frame.
+		 */
+		if (!allowLadderHandoff)
+		{
+			isClimbing = false;
+		}
+
+		characterController.Move(
+			displacement);
+
+		if (allowLadderHandoff &&
+			TryTransferToOverlappingLadder())
+		{
+			return;
+		}
+
 		isClimbing = false;
 
-		ladderReentryBlocked = true;
+		reentryBlockedLadder = exitedLadder;
 
 		verticalVelocity =
 			Vector3.zero;
 
 		previousHorizontalSpeed = 0f;
 
-		Vector3 displacement =
-			exitPosition -
-			transform.position;
-
-		characterController.Move(
-			displacement);
-
-		if (!insideCurrentLadderTrigger)
+		if (currentLadder == exitedLadder &&
+			!insideCurrentLadderTrigger)
 		{
 			currentLadder = null;
-			ladderReentryBlocked = false;
+			reentryBlockedLadder = null;
 		}
+	}
+
+	/*
+	 * Keep the existing active-ladder selection while triggers
+	 * overlap, then hand off only after the controller has moved
+	 * into a different ladder's climb area. Querying the final
+	 * capsule makes this independent of delayed trigger callbacks.
+	 */
+	private bool TryTransferToOverlappingLadder()
+	{
+		Ladder nextLadder =
+			FindOverlappingLadder();
+
+		if (nextLadder == null)
+		{
+			return false;
+		}
+
+		RestoreIgnoredLadderPlatform();
+
+		currentLadder = nextLadder;
+
+		insideCurrentLadderTrigger = true;
+
+		isClimbing = true;
+
+		verticalVelocity =
+			Vector3.zero;
+
+		smoothedHorizontalVelocity =
+			Vector3.zero;
+
+		ladderJumpHorizontalVelocity =
+			Vector3.zero;
+
+		previousHorizontalSpeed = 0f;
+
+		IgnoreLadderPlatform();
+
+		return true;
+	}
+
+	private Ladder FindOverlappingLadder()
+	{
+		if (characterController == null)
+		{
+			return null;
+		}
+
+		GetCapsuleAtPosition(
+			transform.position,
+			characterController.height,
+			characterController.center,
+			out Vector3 pointA,
+			out Vector3 pointB,
+			out float radius);
+
+		Collider[] overlaps =
+			Physics.OverlapCapsule(
+				pointA,
+				pointB,
+				radius,
+				~0,
+				QueryTriggerInteraction.Collide);
+
+		Vector3 controllerCenter =
+			GetControllerWorldCenterAt(
+				transform.position,
+				characterController.center);
+
+		Ladder closestLadder = null;
+		float closestDistanceSqr =
+			float.PositiveInfinity;
+
+		foreach (Collider overlap in overlaps)
+		{
+			if (overlap == null ||
+				!overlap.TryGetComponent(
+					out Ladder ladder) ||
+				ladder == currentLadder)
+			{
+				continue;
+			}
+
+			if (Physics.GetIgnoreLayerCollision(
+				gameObject.layer,
+				overlap.gameObject.layer) ||
+				ladder.IsOutsideClimbArea(
+					controllerCenter,
+					out _))
+			{
+				continue;
+			}
+
+			float distanceSqr =
+				(overlap.bounds.center -
+				 controllerCenter).sqrMagnitude;
+
+			if (distanceSqr < closestDistanceSqr)
+			{
+				closestLadder = ladder;
+				closestDistanceSqr = distanceSqr;
+			}
+		}
+
+		return closestLadder;
 	}
 
 	// --------------------------------------------------
@@ -1859,6 +2140,11 @@ public class PlayerMovement : MonoBehaviour
 			return;
 		}
 
+		if (ladder == reentryBlockedLadder)
+		{
+			reentryBlockedLadder = null;
+		}
+
 		if (ladder != currentLadder)
 		{
 			return;
@@ -1881,8 +2167,5 @@ public class PlayerMovement : MonoBehaviour
 
 		currentLadder =
 			null;
-
-		ladderReentryBlocked =
-			false;
 	}
 }

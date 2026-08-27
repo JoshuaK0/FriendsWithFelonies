@@ -44,13 +44,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 156651576084280210}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a92f2d2d86812e46a2ee1618f94a7a1, type: 3}
+  m_Script: {fileID: 11500000, guid: ca80ed88c5e6ba54bb1e5170337a5efa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localFlashlightObject: {fileID: 6587621543463324094}
+  localUVFlashlightObject: {fileID: 6587621543463324094}
   audioSource: {fileID: 972113794987506827}
-  toggleOnClip: {fileID: 0}
-  toggleOffClip: {fileID: 0}
+  toggleClip: {fileID: 0}
   startsEnabled: 0
 --- !u!82 &972113794987506827
 AudioSource:
@@ -64,7 +63,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

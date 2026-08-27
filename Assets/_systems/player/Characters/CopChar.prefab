@@ -3834,7 +3834,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!114 &3113628185707089264
 MonoBehaviour:
@@ -4152,6 +4152,7 @@ MonoBehaviour:
   holdPoint: {fileID: 1623559542310507743}
   heldItemVisual: {fileID: 0}
   itemServices: {fileID: 3983805256852078260}
+  characterServices: {fileID: 0}
 --- !u!114 &3834376991043811183
 MonoBehaviour:
   m_ObjectHideFlags: 0

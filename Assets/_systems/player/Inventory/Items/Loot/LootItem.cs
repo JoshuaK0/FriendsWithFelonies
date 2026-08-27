@@ -15,15 +15,11 @@ public sealed class LootItem : HotbarHeldItem
 
 	private LootItemNetworked networkedCounterpart;
 
-	void Start()
-	{
-		muzzle = MyClient.Instance.PlayerManager
-		.LocalPlayerController
-		.GetComponent<CharControllerServiceLocator>()
-		.muzzle;
-	}
 	protected override void OnContextInitialized()
 	{
+		if (CharacterServices != null)
+			muzzle = CharacterServices.muzzle;
+
 		networkedCounterpart = ItemServices != null
 			? ItemServices.GetNetworkedLoot()
 			: null;

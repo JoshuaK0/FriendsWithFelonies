@@ -34,16 +34,11 @@ public sealed class TightRopeItem : HotbarHeldItem
 
     protected override void OnContextInitialized()
     {
+		if (CharacterServices != null)
+			rayOrigin = CharacterServices.muzzle;
+
         networkedCounterpart = ItemServices != null ? ItemServices.GetNetworkedTightRope() : null;
     }
-
-    void Start()
-    {
-		rayOrigin = MyClient.Instance.PlayerManager
-        .LocalPlayerController
-        .GetComponent<CharControllerServiceLocator>()
-        .muzzle;
-	}
 
     protected override void OnEquippedUpdate()
     {

@@ -6,11 +6,11 @@ using UnityEngine.UI;
 /// Persistent night-vision state attached to the player's
 /// inventory object.
 ///
-/// This continues updating when the held-item prefab is
-/// destroyed or replaced.
+/// This continues updating while the held-item prefab is unequipped.
 /// </summary>
 public sealed class NightVisionRuntimeController :
-	MonoBehaviour
+	MonoBehaviour,
+	IInventoryReleaseHandler
 {
 	private const string DurationKey =
 		"nvg_duration";
@@ -40,6 +40,7 @@ public sealed class NightVisionRuntimeController :
 	private bool isInitialized;
 	private bool isOn;
 	private bool localOverrideApplied;
+	private bool isReleased;
 
 	private float previousReflectionIntensity;
 
@@ -59,6 +60,7 @@ public sealed class NightVisionRuntimeController :
 		GameObject configuredScreenFx,
 		Slider configuredSlider)
 	{
+		isReleased = false;
 		itemId = configuredItemId;
 		runtimeState = configuredRuntimeState;
 
@@ -353,18 +355,27 @@ public sealed class NightVisionRuntimeController :
 		);
 	}
 
-	private void OnDestroy()
+	public void OnInventoryReleased()
 	{
-		SaveState();
+		if (isReleased)
+			return;
 
-		/*
-		 * The inventory itself is being destroyed,
-		 * such as when leaving the game or replacing
-		 * the local player.
-		 */
+		isReleased = true;
+		isOn = false;
+
 		ClearNightVisionOutput();
 
 		if (screenFx != null)
 			screenFx.SetActive(false);
+
+		if (slider != null)
+			slider.gameObject.SetActive(false);
+
+		SaveState();
+	}
+
+	private void OnDestroy()
+	{
+		OnInventoryReleased();
 	}
 }

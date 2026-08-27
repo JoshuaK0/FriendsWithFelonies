@@ -21,12 +21,13 @@ public sealed class FlashlightItem : HotbarHeldItem
 			ItemServices != null
 				? ItemServices.GetNetworkedFlashlight()
 				: null;
+
+		enabledState =
+			startsEnabled;
 	}
 
 	protected override void OnEquipped()
 	{
-		enabledState = startsEnabled;
-
 		ApplyLocalState();
 		networkedCounterpart?.RequestSetFlashlight(enabledState);
 	}
@@ -46,9 +47,17 @@ public sealed class FlashlightItem : HotbarHeldItem
 
 	protected override void OnUnequipped()
 	{
-		enabledState = false;
-
 		ApplyLocalState();
+		networkedCounterpart?.RequestSetFlashlight(enabledState);
+	}
+
+	protected override void OnDestroy()
+	{
+		base.OnDestroy();
+
+		// Switching slots preserves the flashlight state. Destroying this
+		// persistent held-item cache does not, so remote observers cannot be
+		// left with a light that no longer has an owner-side item.
 		networkedCounterpart?.RequestSetFlashlight(false);
 	}
 

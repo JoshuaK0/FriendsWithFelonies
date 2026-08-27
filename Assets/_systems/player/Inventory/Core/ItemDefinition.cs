@@ -1,6 +1,13 @@
 using FishNet.Object;
 using UnityEngine;
 
+public enum ShopTeamAvailability
+{
+	BothTeams,
+	CopsOnly,
+	RobbersOnly
+}
+
 [CreateAssetMenu(
 	menuName = "Inventory/Items/Item Definition",
 	fileName = "New Item")]
@@ -13,6 +20,11 @@ public class ItemDefinition : ScriptableObject
 	[Header("Inventory")]
 	[SerializeField, Min(1)] private int maxStack = 1;
 
+	[Tooltip(
+		"If true, this item may occupy additional hotbar stacks after " +
+		"one stack reaches its maximum size.")]
+	[SerializeField] private bool allowMultipleStacks;
+
 	[Tooltip("If true, the item is removed from its hotbar slot when its count reaches zero.")]
 	[SerializeField] private bool consumeOnEmpty = true;
 
@@ -20,7 +32,13 @@ public class ItemDefinition : ScriptableObject
 	[SerializeField] private bool isDroppable = true;
 
 	[Header("Shop")]
+	[Tooltip("If false, this item is omitted from the shop for every team.")]
 	[SerializeField] private bool isPurchasable = true;
+
+	[Tooltip("Both Teams makes this item available to Cops and Robbers.")]
+	[SerializeField]
+	private ShopTeamAvailability shopTeamAvailability =
+		ShopTeamAvailability.BothTeams;
 
 	[SerializeField, Min(0)]
 	private int cost = 100;
@@ -48,6 +66,9 @@ public class ItemDefinition : ScriptableObject
 	public int MaxStack =>
 		Mathf.Max(1, maxStack);
 
+	public bool AllowMultipleStacks =>
+		allowMultipleStacks;
+
 	public bool ConsumeOnEmpty =>
 		consumeOnEmpty;
 
@@ -56,6 +77,28 @@ public class ItemDefinition : ScriptableObject
 
 	public bool IsPurchasable =>
 		isPurchasable;
+
+	public ShopTeamAvailability ShopTeamAvailability =>
+		shopTeamAvailability;
+
+	public bool IsAvailableInShopFor(TeamType teamType)
+	{
+		switch (shopTeamAvailability)
+		{
+			case ShopTeamAvailability.BothTeams:
+				return teamType == TeamType.Cop ||
+					teamType == TeamType.Robber;
+
+			case ShopTeamAvailability.CopsOnly:
+				return teamType == TeamType.Cop;
+
+			case ShopTeamAvailability.RobbersOnly:
+				return teamType == TeamType.Robber;
+
+			default:
+				return false;
+		}
+	}
 
 	public int Cost =>
 		Mathf.Max(0, cost);

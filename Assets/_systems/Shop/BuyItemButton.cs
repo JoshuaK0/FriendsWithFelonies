@@ -13,6 +13,7 @@ public class BuyItemButton : MonoBehaviour
 
 	private PlayerBank playerBank;
 	private NetHotbarPickup hotbarPickup;
+	private PlayerInventory inventory;
 
 	private Action<int, ItemDefinition> purchaseCallback;
 
@@ -40,6 +41,10 @@ public class BuyItemButton : MonoBehaviour
 		playerBank.OnMoneyChanged -= HandleMoneyChanged;
 		playerBank.OnMoneyChanged += HandleMoneyChanged;
 
+		PlayerInventory.InstanceChanged -= HandleInventoryInstanceChanged;
+		PlayerInventory.InstanceChanged += HandleInventoryInstanceChanged;
+		BindInventory(PlayerInventory.Instance);
+
 		RefreshButton();
 	}
 
@@ -50,9 +55,38 @@ public class BuyItemButton : MonoBehaviour
 
 		if (playerBank != null)
 			playerBank.OnMoneyChanged -= HandleMoneyChanged;
+
+		PlayerInventory.InstanceChanged -= HandleInventoryInstanceChanged;
+		BindInventory(null);
 	}
 
 	private void HandleMoneyChanged(int currentMoney)
+	{
+		RefreshButton();
+	}
+
+	private void HandleInventoryInstanceChanged(PlayerInventory newInventory)
+	{
+		BindInventory(newInventory);
+	}
+
+	private void BindInventory(PlayerInventory newInventory)
+	{
+		if (inventory == newInventory)
+			return;
+
+		if (inventory != null)
+			inventory.OnInventoryChanged -= HandleInventoryChanged;
+
+		inventory = newInventory;
+
+		if (inventory != null)
+			inventory.OnInventoryChanged += HandleInventoryChanged;
+
+		RefreshButton();
+	}
+
+	private void HandleInventoryChanged()
 	{
 		RefreshButton();
 	}
@@ -61,11 +95,13 @@ public class BuyItemButton : MonoBehaviour
 	{
 		if (item == null ||
 			playerBank == null ||
-			button == null)
+			button == null ||
+			hotbarPickup == null)
 			return;
 
 		button.SetInteractable(
-			playerBank.CanAfford(item.Cost));
+			playerBank.CanAfford(item.Cost) &&
+			hotbarPickup.WouldAcceptPickup(itemId));
 	}
 
 	private void Buy()
@@ -74,6 +110,12 @@ public class BuyItemButton : MonoBehaviour
 			playerBank == null ||
 			hotbarPickup == null)
 			return;
+
+		if (!hotbarPickup.WouldAcceptPickup(itemId))
+		{
+			RefreshButton();
+			return;
+		}
 
 		if (!playerBank.TrySpend(item.Cost))
 			return;

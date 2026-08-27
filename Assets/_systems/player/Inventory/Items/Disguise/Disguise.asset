@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Disguise
   maxStack: 1
   consumeOnEmpty: 0
-  isDroppable: 1
+  isDroppable: 0
   isPurchasable: 1
   cost: 100
   purchaseAmount: 1

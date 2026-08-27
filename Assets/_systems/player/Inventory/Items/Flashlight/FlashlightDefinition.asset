@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lookupName: flashlight
   displayName: Flashlight
-  maxStack: 1
+  maxStack: 999
   consumeOnEmpty: 1
   isDroppable: 1
   isPurchasable: 0

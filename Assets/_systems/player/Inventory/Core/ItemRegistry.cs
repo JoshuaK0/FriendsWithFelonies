@@ -130,6 +130,12 @@ public class ItemRegistry : ScriptableObject
         return item != null ? item.MaxStack : 1;
     }
 
+    public bool AllowsMultipleStacks(int itemId)
+    {
+        ItemDefinition item = GetItem(itemId);
+        return item != null && item.AllowMultipleStacks;
+    }
+
     public bool ConsumeOnEmptyOf(int itemId)
     {
         ItemDefinition item = GetItem(itemId);

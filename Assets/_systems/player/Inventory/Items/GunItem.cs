@@ -173,6 +173,9 @@ public sealed class GunItem : HotbarHeldItem
 
 	private CrosshairController crosshairController;
 
+	private const string CurrentRoundsStateKey =
+		"current-rounds";
+
 	private int currentRounds;
 	private float currentBloom;
 	private float nextFireTime;
@@ -211,25 +214,26 @@ public sealed class GunItem : HotbarHeldItem
 			baseSpread + currentBloom);
 
 
-	private void Start()
-	{
-		crosshairController =
-			MyClient.Instance.PlayerManager
-				.LocalPlayerController
-				.GetComponent<CharControllerServiceLocator>()
-				.CrosshairController;
-
-		fireOrigin = MyClient.Instance.PlayerManager
-				.LocalPlayerController
-				.GetComponent<CharControllerServiceLocator>()
-				.muzzle;
-	}
-
-
 	protected override void OnContextInitialized()
 	{
+		if (CharacterServices != null)
+		{
+			crosshairController = CharacterServices.CrosshairController;
+			fireOrigin = CharacterServices.muzzle;
+		}
+
 		currentRounds =
-			MagazineSize;
+			Mathf.Clamp(
+				RuntimeState != null
+					? RuntimeState.GetInt(
+						ItemId,
+						CurrentRoundsStateKey,
+						MagazineSize)
+					: MagazineSize,
+				0,
+				MagazineSize);
+
+		SaveCurrentRounds();
 
 		ResolveRuntimeReferences();
 
@@ -252,6 +256,8 @@ public sealed class GunItem : HotbarHeldItem
 				currentRounds,
 				0,
 				MagazineSize);
+
+		SaveCurrentRounds();
 
 		ResetViewmodel();
 		ResetReloadSpin();
@@ -300,6 +306,7 @@ public sealed class GunItem : HotbarHeldItem
 	protected override void OnUnequipped()
 	{
 		CancelReload();
+		SaveCurrentRounds();
 
 		currentBloom = 0f;
 
@@ -364,6 +371,7 @@ public sealed class GunItem : HotbarHeldItem
 			CalculatePelletDirections();
 
 		currentRounds--;
+		SaveCurrentRounds();
 
 		currentBloom =
 			Mathf.Min(
@@ -982,6 +990,8 @@ public sealed class GunItem : HotbarHeldItem
 			currentRounds =
 				MagazineSize;
 
+			SaveCurrentRounds();
+
 			reloadRoutine = null;
 
 			UpdateAmmoCounter();
@@ -1060,6 +1070,8 @@ public sealed class GunItem : HotbarHeldItem
 		currentRounds =
 			MagazineSize;
 
+		SaveCurrentRounds();
+
 		reloadRoutine = null;
 
 		UpdateAmmoCounter();
@@ -1084,6 +1096,15 @@ public sealed class GunItem : HotbarHeldItem
 		{
 			reloadAudioSource.Stop();
 		}
+	}
+
+
+	private void SaveCurrentRounds()
+	{
+		RuntimeState?.SetInt(
+			ItemId,
+			CurrentRoundsStateKey,
+			currentRounds);
 	}
 
 
