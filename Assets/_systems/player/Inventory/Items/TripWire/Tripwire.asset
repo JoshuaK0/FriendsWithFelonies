@@ -15,9 +15,11 @@ MonoBehaviour:
   lookupName: tripwire
   displayName: Tripwire
   maxStack: 10
+  allowMultipleStacks: 0
   consumeOnEmpty: 1
   isDroppable: 1
   isPurchasable: 1
+  shopTeamAvailability: 1
   cost: 100
   purchaseAmount: 3
   worldPrefab: {fileID: 5667734249071657374, guid: 0ef27c73371eb064cb9ba07882c9a42d,

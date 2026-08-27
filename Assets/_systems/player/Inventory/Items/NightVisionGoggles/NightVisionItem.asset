@@ -15,9 +15,11 @@ MonoBehaviour:
   lookupName: nightVisionGoggles
   displayName: Night Vision Goggles
   maxStack: 1
+  allowMultipleStacks: 0
   consumeOnEmpty: 0
   isDroppable: 0
   isPurchasable: 1
+  shopTeamAvailability: 2
   cost: 10
   purchaseAmount: 1
   worldPrefab: {fileID: 5667734249071657374, guid: 3bf7fc818eeda75478d5a7d48949563d,

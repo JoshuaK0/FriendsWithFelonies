@@ -15,9 +15,11 @@ MonoBehaviour:
   lookupName: drill
   displayName: Drill
   maxStack: 10
+  allowMultipleStacks: 0
   consumeOnEmpty: 1
   isDroppable: 1
   isPurchasable: 1
+  shopTeamAvailability: 2
   cost: 100
   purchaseAmount: 1
   worldPrefab: {fileID: 5667734249071657374, guid: a496ec2ab483b2d47a55c23f4f948b8c,

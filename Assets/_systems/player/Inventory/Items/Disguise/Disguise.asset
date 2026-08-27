@@ -15,9 +15,11 @@ MonoBehaviour:
   lookupName: disguise
   displayName: Disguise
   maxStack: 1
+  allowMultipleStacks: 0
   consumeOnEmpty: 0
   isDroppable: 0
   isPurchasable: 1
+  shopTeamAvailability: 2
   cost: 100
   purchaseAmount: 1
   worldPrefab: {fileID: 3594035887864941349, guid: 10a8cb27f621f5b468e0e298c5178683,

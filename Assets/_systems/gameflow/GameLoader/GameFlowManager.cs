@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using UnityEngine;
@@ -378,6 +379,11 @@ public class GameFlowManager : NetworkBehaviour
 					yield break;
 				}
 
+				yield return ReloadMapAfterTeamRotation();
+
+				if (stopRequested)
+					break;
+
 				InitializeAfterTeamRotation();
 
 				TeamTypesCycledObserversRpc();
@@ -447,6 +453,44 @@ public class GameFlowManager : NetworkBehaviour
 		return totalRounds > 1 &&
 			   round == totalRounds / 2 &&
 			   round < totalRounds;
+	}
+
+	[Server]
+	private IEnumerator ReloadMapAfterTeamRotation()
+	{
+		if (MapManager.Instance == null)
+		{
+			AbortGame("MapManager.Instance is null after team rotation.");
+			yield break;
+		}
+
+		if (NetworkSceneManager.Instance == null)
+		{
+			AbortGame(
+				"NetworkSceneManager.Instance is null after team rotation.");
+			yield break;
+		}
+
+		string mapSceneName = MapManager.Instance.gameObject.scene.name;
+
+		if (string.IsNullOrEmpty(mapSceneName))
+		{
+			AbortGame("The current map scene has no name.");
+			yield break;
+		}
+
+		Task reloadTask =
+			NetworkSceneManager.Instance.LoadSceneAsync(mapSceneName);
+
+		while (!reloadTask.IsCompleted)
+			yield return null;
+
+		if (reloadTask.IsFaulted)
+		{
+			AbortGame(
+				$"The map scene '{mapSceneName}' could not be reloaded: " +
+				reloadTask.Exception?.GetBaseException().Message);
+		}
 	}
 
 	private void StopFlowImmediately(

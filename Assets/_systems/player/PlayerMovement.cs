@@ -180,6 +180,7 @@ public class PlayerMovement : MonoBehaviour
 	private float currentStamina;
 
 	private float staminaRecoveryTimer;
+	private bool staminaBarVisible = true;
 
 	private Ladder currentLadder;
 
@@ -964,6 +965,12 @@ public class PlayerMovement : MonoBehaviour
 			return;
 		}
 
+		if (!staminaBarVisible)
+		{
+			staminaBar.gameObject.SetActive(false);
+			return;
+		}
+
 		float maximum =
 			GetMaximumStamina();
 
@@ -979,6 +986,12 @@ public class PlayerMovement : MonoBehaviour
 		staminaBar.value =
 			currentStamina /
 			maximum;
+	}
+
+	public void SetStaminaBarVisible(bool visible)
+	{
+		staminaBarVisible = visible;
+		UpdateStaminaBar();
 	}
 
 	// --------------------------------------------------

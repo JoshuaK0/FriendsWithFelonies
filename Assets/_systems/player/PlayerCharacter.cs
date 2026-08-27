@@ -37,6 +37,9 @@ public class PlayerCharacter : NetworkBehaviour
 	private CharControllerServiceLocator charControllerServiceLocator;
 
 	[SerializeField]
+	private CrosshairController crosshairController;
+
+	[SerializeField]
 	private PlayerInteractor playerInteractor;
 
 	[SerializeField] NetworkRagdollManager ragdollManager;
@@ -72,6 +75,11 @@ public class PlayerCharacter : NetworkBehaviour
 		if (playerInteractor == null)
 			playerInteractor =
 				GetComponentInChildren<PlayerInteractor>(true);
+
+		if (crosshairController == null &&
+			charControllerServiceLocator != null)
+			crosshairController =
+				charControllerServiceLocator.CrosshairController;
 	}
 
 	public override void OnStartServer()
@@ -196,7 +204,16 @@ public class PlayerCharacter : NetworkBehaviour
 			inventory.SetPaused(true);
 
 			if (playerInteractor != null)
+			{
 				playerInteractor.enabled = false;
+				playerInteractor.HideInteractionUI();
+			}
+
+			if (crosshairController != null)
+				crosshairController.gameObject.SetActive(false);
+
+			if (playerMovement != null)
+				playerMovement.SetStaminaBarVisible(false);
 
 			mouseLook.enabled = false;
 			playerMovement.enabled = false;
@@ -208,8 +225,14 @@ public class PlayerCharacter : NetworkBehaviour
 			if (playerInteractor != null)
 				playerInteractor.enabled = true;
 
+			if (crosshairController != null)
+				crosshairController.gameObject.SetActive(true);
+
 			mouseLook.enabled = true;
 			playerMovement.enabled = true;
+
+			if (playerMovement != null)
+				playerMovement.SetStaminaBarVisible(true);
 		}
 	}
 

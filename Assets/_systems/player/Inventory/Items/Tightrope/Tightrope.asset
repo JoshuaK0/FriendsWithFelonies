@@ -15,9 +15,11 @@ MonoBehaviour:
   lookupName: tightrope
   displayName: Tightrope
   maxStack: 10
+  allowMultipleStacks: 0
   consumeOnEmpty: 1
   isDroppable: 1
   isPurchasable: 1
+  shopTeamAvailability: 2
   cost: 100
   purchaseAmount: 1
   worldPrefab: {fileID: 3806775847971038318, guid: fa6d09c30d61c0348be39abaa3fd3618,

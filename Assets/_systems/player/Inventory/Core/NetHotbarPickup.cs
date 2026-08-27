@@ -54,6 +54,14 @@ public class NetHotbarPickup : NetworkBehaviour
 		return true;
 	}
 
+	public bool WouldAcceptPickup(int itemId)
+	{
+		if (hotbar == null)
+			return false;
+
+		return hotbar.WouldAcceptPickup(itemId);
+	}
+
 	/// <summary>
 	/// Gives the owning player a specific amount of an item.
 	/// Intended for shops, rewards, etc.

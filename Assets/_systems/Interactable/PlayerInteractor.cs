@@ -72,6 +72,16 @@ public sealed class PlayerInteractor : MonoBehaviour
 
 	private void OnDisable()
 	{
+		HideInteractionUI();
+	}
+
+	public void HideInteractionUI()
+	{
+		current = null;
+		currentAnchor = null;
+		currentUsesDirectRaycast = false;
+		canInteract = false;
+		cannotInteractReason = string.Empty;
 		CancelHold();
 		iconUI?.Hide();
 	}
