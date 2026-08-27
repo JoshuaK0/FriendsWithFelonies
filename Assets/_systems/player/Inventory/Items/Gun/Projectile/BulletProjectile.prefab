@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8977603293613929404}
   - component: {fileID: 7282126504220644281}
   - component: {fileID: 8038580615892482532}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 5105823613654340139}
   - component: {fileID: 6240168734880774514}
   - component: {fileID: 1723868073336183421}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: BulletProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,7 +196,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6315719129654430636}
   - component: {fileID: 3119952054823414411}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +263,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 3
+  m_Time: 5
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -344,7 +344,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5032341744624909024}
   - component: {fileID: 413864866751710053}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -415,7 +415,7 @@ TrailRenderer:
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.2
+    widthMultiplier: 0.1
     widthCurve:
       serializedVersion: 2
       m_Curve:
